@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024.0" prefWidth="1920.0" stylesheets="/css/homePage.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="system.pos.javafx.controller.HomePageController">
+   <AnchorPane layoutX="1638.0" layoutY="3.0" prefHeight="1061.0" prefWidth="277.0">
+      <fx:include source="sidebar.fxml" />
+   </AnchorPane>
+   <VBox layoutX="55.0" layoutY="40.0" prefHeight="915.0" prefWidth="1468.0" style="-fx-spacing: 30px;">
+      <children>
+         <Label alignment="TOP_LEFT" prefHeight="229.0" prefWidth="500.0" text="ЕТНО ПАНОРАМА">
+            <font>
+               <Font size="60.0" />
+            </font>
+         </Label>
+         <FlowPane fx:id="flowPane" prefHeight="980.0" prefWidth="1468.0" />
+      </children>
+   </VBox>
+</Pane>

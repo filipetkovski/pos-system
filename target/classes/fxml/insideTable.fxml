@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="border" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024.0" prefWidth="1920.0" stylesheets="/css/insideTable.css, /css/table.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="system.pos.javafx.controller.InsideTableController">
+   <left>
+      <AnchorPane prefHeight="946.0" prefWidth="979.0" BorderPane.alignment="CENTER">
+         <VBox fx:id="categoryContainer" layoutX="25.0" layoutY="89.0" prefHeight="752.0" prefWidth="165.0" />
+         <ScrollPane layoutX="237.0" layoutY="89.0" prefHeight="724.0" prefWidth="722.0">
+            <content>
+               <FlowPane fx:id="listProducts" prefHeight="184.0" prefWidth="722.0" />
+            </content>
+         </ScrollPane>
+         <HBox fx:id="searchHBox" layoutX="25.0" layoutY="20.0" prefHeight="58.0" prefWidth="655.0" style="-fx-spacing: 10px;">
+            <TextField fx:id="searchInput" disable="true" prefHeight="41.0" prefWidth="446.0" promptText="Пребарај...">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </TextField>
+            <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchProduct" prefHeight="46.0" prefWidth="165.0" text="Пребарај">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Button>
+         </HBox>
+      </AnchorPane>
+   </left>
+   <top>
+      <AnchorPane prefHeight="78.0" prefWidth="1920.0" BorderPane.alignment="CENTER">
+         <Line endX="1821.0" endY="1.52587890625E-5" layoutX="100.0" layoutY="77.0" startX="-167.0" startY="1.52587890625E-5" style="-fx-fill: gray;" />
+         <Label fx:id="messageLabel" layoutX="1021.0" layoutY="14.0" prefHeight="50.0" prefWidth="836.0" textFill="#f62b2b">
+            <font>
+               <Font size="25.0" />
+            </font>
+         </Label>
+         <HBox alignment="CENTER" layoutX="25.0" layoutY="12.0" prefHeight="55.0" prefWidth="638.0" style="-fx-spacing: 10px;">
+            <children>
+               <Label prefHeight="43.0" prefWidth="337.0" text="ЕТНО ПАНОРАМА">
+                  <font>
+                     <Font size="35.0" />
+                  </font>
+               </Label>
+               <Button fx:id="exitButton" focusTraversable="false" mnemonicParsing="false" onAction="#back" prefHeight="50.0" prefWidth="150.0" text="Назад" textFill="#030303">
+                  <font>
+                     <Font size="25.0" />
+                  </font>
+               </Button>
+               <Button fx:id="openTableButton" mnemonicParsing="false" onAction="#openTable" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="OPEN TABLE" textFill="#030303" visible="#hasOrder">
+                  <font>
+                     <Font size="25.0" />
+                  </font>
+               </Button>
+            </children>
+         </HBox>
+      </AnchorPane>
+   </top>
+   <center>
+      <AnchorPane prefHeight="945.0" prefWidth="624.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+         <TableView fx:id="tableView" editable="true" layoutX="32.0" layoutY="89.0" prefHeight="719.0" prefWidth="560.0">
+            <columns>
+               <TableColumn fx:id="productColumn" prefWidth="210.175537109375" text="ПРОИЗВОД" />
+               <TableColumn fx:id="quantityColumn" prefWidth="94.0" text="КОЛИЧИНА" />
+               <TableColumn fx:id="descriptionColumn" prefWidth="252.0" text="ОПИС" />
+            </columns>
+         </TableView>
+         <HBox layoutX="32.0" layoutY="20.0" prefHeight="53.0" prefWidth="563.0" style="-fx-spacing: 10px;">
+            <Button fx:id="deleteOrderButton" mnemonicParsing="false" onAction="#deleteOrderTable" prefHeight="50.0" prefWidth="180.0" text="Избриши" textFill="#030303">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Button>
+            <Button fx:id="submitProducts" mnemonicParsing="false" onAction="#saveToOrder" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="Потврди" textFill="#030303">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Button>
+         </HBox>
+      </AnchorPane>
+   </center>
+   <right>
+      <AnchorPane prefHeight="946.0" prefWidth="318.0" BorderPane.alignment="CENTER">
+         <VBox layoutX="36.0" layoutY="20.0" prefHeight="200.0" prefWidth="245.0" style="-fx-spacing: 2px;">
+            <Label fx:id="codeLabel" prefHeight="37.0" prefWidth="188.0" text="Код">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label fx:id="employeeName" text="Ќелнер">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label fx:id="tableNumber" text="Маса">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="dateLabel" prefHeight="26.0" prefWidth="146.0" text="Време">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+         </VBox>
+         <VBox alignment="TOP_CENTER" layoutX="36.0" layoutY="212.0" prefHeight="358.0" prefWidth="244.0" style="-fx-spacing: 10px;">
+            <Label text="Вкупно">
+               <font>
+                  <Font size="35.0" />
+               </font>
+            </Label>
+            <Line endX="175.142333984375" startX="-56.587646484375" />
+            <Label fx:id="totalPrice" contentDisplay="CENTER" prefHeight="50.0" prefWidth="251.0" style="-fx-alignment: center;" text="0ден" textFill="#f62b2b">
+               <font>
+                  <Font size="40.0" />
+               </font>
+            </Label>
+            <Label />
+            <Label />
+            <Button fx:id="payButton" mnemonicParsing="false" onAction="#pay" prefHeight="50.0" prefWidth="240.0" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="НАПЛАТИ" textFill="#030303">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Button>
+            <Button fx:id="closeTableButton" mnemonicParsing="false" onAction="#closeTable" prefHeight="57.0" prefWidth="240.0" style="-fx-background-color: #f62b2b; -fx-text-fill: white;" text="ЗАТВОРИ" textFill="#030303" visible="#hasOrder">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Button>
+            <Button fx:id="holdButton" mnemonicParsing="false" onAction="#holdOrder" prefHeight="50.0" prefWidth="240.0" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="ЧЕКАЊЕ" textFill="#030303">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Button>
+         </VBox>
+      </AnchorPane>
+   </right>
+</BorderPane>

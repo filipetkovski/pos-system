@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024.0" prefWidth="1650.0" stylesheets="/css/table.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="system.pos.javafx.controller.settingsControllers.LogsController">
+    <HBox alignment="CENTER" layoutX="-1.0" layoutY="170.0" prefHeight="923.0" prefWidth="1654.0">
+        <VBox prefHeight="941.0" prefWidth="1201.0">
+            <TableView fx:id="logTable" prefHeight="730.0" prefWidth="1168.0">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="75.46217346191406" text="КОД" />
+                    <TableColumn fx:id="employeeColumn" minWidth="0.0" prefWidth="188.0" text="КОРИСНИК" />
+                    <TableColumn fx:id="productColumn" prefWidth="177.0" text="ПРОДУКТ" />
+                    <TableColumn fx:id="orderColumn" prefWidth="173.0" text="НАРАЧКА" />
+                    <TableColumn fx:id="tableColumn" prefWidth="108.0" text="МАСА" />
+                    <TableColumn fx:id="statusColumn" prefWidth="224.0" text="СТАТУС" />
+                    <TableColumn fx:id="dateColumn" prefWidth="256.0" text="ДАТУМ" />
+                </columns>
+            </TableView>
+        </VBox>
+    </HBox>
+</Pane>
