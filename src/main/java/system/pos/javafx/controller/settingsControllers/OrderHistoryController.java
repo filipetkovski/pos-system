@@ -83,6 +83,20 @@ public class OrderHistoryController {
             return new SimpleStringProperty((paymentMethod != null) ? paymentMethod.name().toUpperCase() : "");
         });
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name().toUpperCase()));
+        statusColumn.setCellFactory(column -> new TableCell<Order, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    setTextFill(item.equalsIgnoreCase("НЕ_ПЛАТЕНА") ? Color.PURPLE : (item.equalsIgnoreCase("ОТКАЖАНА") ? Color.RED : Color.BLACK) );
+                }
+            }
+        });
         dateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedOn()));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss - dd/MM/yyyy");
