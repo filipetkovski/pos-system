@@ -131,6 +131,7 @@ public class PaymentController {
             Integer price = order.getPrice();
             try {
                 order.setPrice(price - (price * Integer.parseInt(percentDiscount)) / 100);
+                orderService.save(order);
             } catch (NumberFormatException e) {
                 printMessage("Невалидна оперцаија! Внеси број.", false);
                 return;
