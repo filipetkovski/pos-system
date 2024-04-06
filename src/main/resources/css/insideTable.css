@@ -71,6 +71,10 @@ Button {
     -fx-margin: 10px;
 }
 
+#productName {
+    -fx-font-size: 20px;
+}
+
 .text-field {
     -fx-background-color: #EAEAEAFF;
     -fx-text-fill: #181818;
