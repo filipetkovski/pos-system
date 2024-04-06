@@ -19,9 +19,7 @@ public class ChoiceBoxTableCellFactory<T> {
                 super.startEdit();
                 setText(null);
                 setGraphic(choiceBox);
-
                 getTableView().edit(getIndex(), getTableColumn());
-
                 Platform.runLater(() -> {
                     choiceBox.show();
                     choiceBox.requestFocus();
