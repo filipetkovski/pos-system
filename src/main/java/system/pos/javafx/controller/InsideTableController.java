@@ -187,7 +187,7 @@ public class InsideTableController {
     }
 
     public void closeTable() {  //This method will be called when the closeTableButton is clicked, and it will open the authentication fxml
-        authenticationController.initData(this);
+        authenticationController.initData(this,table);
         listener.changeScene("/fxml/authentication.fxml");
     }
 

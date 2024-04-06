@@ -13,6 +13,7 @@ import system.pos.spring.enumm.EmployeeStatus;
 import system.pos.spring.enumm.SideBar;
 import system.pos.spring.enumm.UserRole;
 import system.pos.spring.model.Employee;
+import system.pos.spring.model.Tables;
 import system.pos.spring.service.EmployeeService;
 
 
@@ -29,6 +30,7 @@ public class AuthenticationController {
     }
 
     private Employee employee;
+    private Tables openTable;
 
     @FXML
     private Button loginButton;
@@ -46,8 +48,9 @@ public class AuthenticationController {
         backButton.setCancelButton(true);
     }
 
-    public void initData(Object callingController) {
+    public void initData(Object callingController, Tables openTable) {
         this.callingController = callingController;
+        this.openTable = openTable;
     }
 
     //Login algorithm
@@ -69,7 +72,11 @@ public class AuthenticationController {
                     if(employee.getStatus().equals(EmployeeStatus.НЕАКТИВЕН)) {
                         printMessage("Не сте на смена.", false);
                     } else {
-                        returnAuthToken();
+                        if(openTable.getOrder() == null || employee.getCode().equals(openTable.getOrder().getEmployee().getCode()) || employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+                            returnAuthToken();
+                        } else {
+                            printMessage("Ќелнер: " + openTable.getOrder().getEmployee().getName(), false);
+                        }
                     }
                 }
             } else {

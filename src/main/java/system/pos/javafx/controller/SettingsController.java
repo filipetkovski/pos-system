@@ -7,19 +7,24 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import system.pos.javafx.controller.settingsControllers.OrderHistoryController;
 import system.pos.javafx.stage.StageListener;
+import system.pos.spring.model.Employee;
 
 @Component
 public class SettingsController {
     private final StageListener stageListener;
+    private OrderHistoryController orderHistoryController;
     private final ApplicationContext applicationContext;
 
-    public SettingsController(StageListener stageListener, ApplicationContext applicationContext) {
+    public SettingsController(StageListener stageListener, OrderHistoryController orderHistoryController, ApplicationContext applicationContext) {
         this.stageListener = stageListener;
+        this.orderHistoryController = orderHistoryController;
         this.applicationContext = applicationContext;
     }
 
     private String fxmlPath = "/fxml/newEmployee.fxml";
+    private Employee employee;
 
 
     @FXML
@@ -33,6 +38,7 @@ public class SettingsController {
         changeIncludeSource(fxmlPath);
     }
 
+    //Return button
     public void returnBack() {
         stageListener.changeScene( "/fxml/homePage.fxml");
     }
@@ -43,6 +49,7 @@ public class SettingsController {
     }
 
     public void viewOrderHistory() {
+        orderHistoryController.initData(employee);
         fxmlPath = "/fxml/orderHistory.fxml";
         changeIncludeSource(fxmlPath);
     }
@@ -72,6 +79,7 @@ public class SettingsController {
         changeIncludeSource(fxmlPath);
     }
 
+    //Change hte inside view
     public void changeIncludeSource(String newFXMLPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(newFXMLPath));
@@ -81,5 +89,9 @@ public class SettingsController {
         } catch (Exception e) {
             System.out.println("Error");
         }
+    }
+
+    public void initData(Employee employee) {
+        this.employee = employee;
     }
 }

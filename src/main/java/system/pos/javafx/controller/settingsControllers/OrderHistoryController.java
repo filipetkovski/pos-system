@@ -17,6 +17,7 @@ import system.pos.javafx.controller.PaymentController;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.Payment;
 import system.pos.spring.enumm.Status;
+import system.pos.spring.model.Employee;
 import system.pos.spring.model.Order;
 import system.pos.spring.service.OrderService;
 
@@ -24,12 +25,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
-public class OrderHistory {
+public class OrderHistoryController {
     private final OrderService orderService;
     private final PaymentController paymentController;
     private final StageListener stageListener;
 
-    public OrderHistory(OrderService orderService, PaymentController paymentController, StageListener stageListener) {
+    public OrderHistoryController(OrderService orderService, PaymentController paymentController, StageListener stageListener) {
         this.orderService = orderService;
         this.paymentController = paymentController;
         this.stageListener = stageListener;
@@ -55,6 +56,7 @@ public class OrderHistory {
     private TableColumn<Order, LocalDateTime> dateColumn;
     @FXML
     private Label messageLabel;
+    private Employee employee;
 
     @FXML
     public void initialize() {
@@ -107,7 +109,7 @@ public class OrderHistory {
                 Order order = orderTable.getItems().get(finalSelectedIndex);
                 if(order != null) {
                     if(order.getStatus().equals(Status.НЕ_ПЛАТЕНА)) {
-                        paymentController.initData(this,order,order.getEmployee());
+                        paymentController.initData(this,order,employee);
                         stageListener.changeScene("/fxml/payment.fxml");
                     } else if(order.getStatus().equals(Status.ОТКАЖАНА)) {
                         printMessage("Нарачката е веќе откажана!", false);
@@ -146,5 +148,9 @@ public class OrderHistory {
             timeline.setCycleCount(1);
             timeline.play();
         });
+    }
+
+    public void initData(Employee employee) {
+        this.employee = employee;
     }
 }

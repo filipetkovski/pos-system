@@ -50,7 +50,7 @@ public class HomePageController {
 
     private void clickTable(Tables table) { //Open authentication, authenticate, so you can open the table
         openTable = table;
-        authenticationController.initData(this);
+        authenticationController.initData(this,openTable);
         stageListener.changeScene("/fxml/authentication.fxml");
     }
 

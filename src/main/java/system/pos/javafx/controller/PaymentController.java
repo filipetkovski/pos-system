@@ -8,7 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.springframework.stereotype.Component;
-import system.pos.javafx.controller.settingsControllers.OrderHistory;
+import system.pos.javafx.controller.settingsControllers.OrderHistoryController;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.Payment;
 import system.pos.spring.enumm.UserRole;
@@ -141,7 +141,7 @@ public class PaymentController {
     }
 
     public void returnBack() {
-        if(callingController instanceof OrderHistory) {
+        if(callingController instanceof OrderHistoryController) {
             stageListener.changeScene("/fxml/settings.fxml");
         } else if (callingController instanceof InsideTableController) {
             stageListener.changeScene("/fxml/insideTable.fxml");

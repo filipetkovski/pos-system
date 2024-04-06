@@ -21,12 +21,14 @@ import java.util.List;
 @Data
 public class SidebarController {
     private final AuthenticationController authenticationController;
+    private final SettingsController settingsController;
     private final StageListener stageListener;
     private final EmployeeService employeeService;
     private final AuthLogsService authLogsService;
 
-    public SidebarController(AuthenticationController authenticationController, StageListener stageListener, EmployeeService employeeService, AuthLogsService authLogsService) {
+    public SidebarController(AuthenticationController authenticationController, SettingsController settingsController, StageListener stageListener, EmployeeService employeeService, AuthLogsService authLogsService) {
         this.authenticationController = authenticationController;
+        this.settingsController = settingsController;
         this.stageListener = stageListener;
         this.employeeService = employeeService;
         this.authLogsService = authLogsService;
@@ -43,29 +45,34 @@ public class SidebarController {
     @FXML
     public void initialize()  {
         timeNow();
-        printActiveUsers();
+        listActiveUsers();
     }
 
+    //Open Settings from Authentication view
     public void settingAuthenticator() {
-        authenticationController.initData(this);
+        authenticationController.initData(this,null);
         sideBar = SideBar.SETTINGS;
         stageListener.changeScene("/fxml/authentication.fxml");
     }
 
+    //Change user working status from Authentication view
     public void shiftAuthenticator() {
-        authenticationController.initData(this);
+        authenticationController.initData(this,null);
         sideBar = SideBar.SHIFT;
         stageListener.changeScene("/fxml/authentication.fxml");
     }
 
+    //Open the correct view after authentication
     public void openCorrectFxml(Employee employee) {
         if(sideBar.equals(SideBar.SHIFT)) {
             changeShiftStatus(employee);
         } else {
-          stageListener.changeScene("/fxml/settings.fxml");
+            settingsController.initData(employee);
+            stageListener.changeScene("/fxml/settings.fxml");
         }
     }
 
+    //Change the user working status
     public void changeShiftStatus(Employee employee) {
         String status;
         if(employee.getStatus().equals(EmployeeStatus.АКТИВЕН)) {
@@ -80,7 +87,8 @@ public class SidebarController {
         stageListener.changeScene("/fxml/homePage.fxml");
     }
 
-    public void printActiveUsers() {
+    //List the active users on the front page
+    public void listActiveUsers() {
         List<Employee> employees = employeeService.findActiveEmployees();
 
         if(employees.isEmpty()) {
@@ -96,6 +104,7 @@ public class SidebarController {
         }
     }
 
+    //Show the time on the front page
     private void timeNow() {
         Thread thread = new Thread(() -> {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
