@@ -29,8 +29,6 @@ public class EmployeeController {
     @FXML
     private RadioButton adminRadio;
     @FXML
-    private RadioButton serverRadio;
-    @FXML
     private Button submitButton;
     @FXML
     private TextField nameInput;
