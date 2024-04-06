@@ -68,11 +68,8 @@ public class LogsController {
     }
 
     public void printOrderLogs() {
-        List<Log> logs = logService.findAll();
-
         logTable.getItems().clear();
-
-        logs.forEach(log -> logTable.getItems().add(log));
+        logService.findAll().forEach(log -> logTable.getItems().add(log));
     }
 
 }
