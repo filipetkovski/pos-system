@@ -1,7 +1,6 @@
 package system.pos.spring.service.impl;
 
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import system.pos.spring.enumm.ProductType;
 import system.pos.spring.model.Category;

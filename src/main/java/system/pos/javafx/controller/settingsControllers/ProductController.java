@@ -1,21 +1,23 @@
 package system.pos.javafx.controller.settingsControllers;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.spring.enumm.ProductType;
+import system.pos.spring.enumm.UserRole;
 import system.pos.spring.model.Category;
 import system.pos.spring.model.Product;
 import system.pos.spring.service.ProductService;
+import system.pos.spring.utility.CapitalizeFirstLetter;
+import system.pos.spring.utility.ChoiceBoxTableCellFactory;
+import system.pos.spring.utility.MessagePrinter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -112,11 +114,7 @@ public class ProductController {
                     setGraphic(null);
                 } else {
                     Product product = getTableView().getItems().get(getIndex());
-                    if (product.getImage() != null) {
-                        button.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;");
-                    } else {
-                        button.setStyle("-fx-background-color: #f62b2b; -fx-text-fill: white;");
-                    }
+                    button.setStyle(product.getImage() != null ? "-fx-background-color: #27ae60; -fx-text-fill: white;" : "-fx-background-color: #f62b2b; -fx-text-fill: white;");
                     setGraphic(button);
                 }
             }
@@ -126,11 +124,8 @@ public class ProductController {
     }
 
     public void renderTables() {
-        List<Product> products = productService.findAll();
-
         productTable.getItems().clear();
-
-        products.forEach(product -> productTable.getItems().add(product));
+        productService.findAll().forEach(product -> productTable.getItems().add(product));
     }
 
     public void createProduct() {
@@ -175,39 +170,6 @@ public class ProductController {
         }
     }
 
-    public ProductType getSelectedRadioButton() {
-        Toggle selectedToggle = toggleGroup.getSelectedToggle();
-
-        if (selectedToggle == null)
-            return null;
-
-        if (selectedToggle.equals(kujnaRadio)) {
-            return ProductType.КУЈНА;
-        } else if (selectedToggle.equals(barRadio)) {
-            return ProductType.БАР;
-        }
-
-        return null;
-    }
-
-    public void printMessage(String message, Boolean color) {
-        Platform.runLater(() -> {
-            if(color) {
-                messageLabel.setTextFill(Color.web("#27ae60"));
-            } else {
-                messageLabel.setTextFill(Color.web("#f62b2b"));
-            }
-            messageLabel.setText(message);
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                messageLabel.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
-    }
-
     public void deleteProduct() {
         TableView.TableViewSelectionModel<Product> selectionModel = productTable.getSelectionModel();
 
@@ -250,7 +212,7 @@ public class ProductController {
                     .filter(element -> element.getCode().equals(product.getCode()))
                     .findFirst()
                     .ifPresent(existingProduct -> {
-                        String name = capitalizeFirstLetter(event.getNewValue());
+                        String name = CapitalizeFirstLetter.capitalizeFirstLetter(event.getNewValue());
                         if(!name.isBlank()) {
                             if(!productService.findByProductName(name)) {
                                 product.setName(name);
@@ -298,61 +260,9 @@ public class ProductController {
         });
 
         //Edit Category column
-        categoryColumn.setCellFactory(column -> {
-            TableCell<Product, String> cell = new TableCell<>() {
-                private final ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        categoryColumn.setCellFactory(column -> ChoiceBoxTableCellFactory
+                .createCellFactory(new ChoiceBox<>(FXCollections.observableList(productService.getSecondLevelCategories().stream().map(Category::getName).toList()))));
 
-                {
-                    choiceBox.getItems().addAll(productService.getSecondLevelCategories().stream().map(Category::getName).toList()); // Assuming getSecondLevelCategories() returns a List<String> of categories
-                    choiceBox.setOnAction(event -> {
-                        if (isEditing()) {
-                            commitEdit(choiceBox.getValue());
-                        }
-                    });
-                }
-
-                @Override
-                public void startEdit() {
-                    super.startEdit();
-                    setText(null);
-                    setGraphic(choiceBox);
-
-                    getTableView().edit(getIndex(), getTableColumn());
-
-
-                    // Use Platform.runLater() to ensure proper initialization
-                    Platform.runLater(() -> {
-                        choiceBox.show();
-                        choiceBox.requestFocus();
-                    });
-                }
-
-                @Override
-                public void cancelEdit() {
-                    super.cancelEdit();
-                    setText(getItem());
-                    setGraphic(null);
-                }
-
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        if (isEditing()) {
-                            setGraphic(choiceBox);
-                            setText(null);
-                        } else {
-                            setText(item);
-                            setGraphic(null);
-                        }
-                    }
-                }
-            };
-            return cell;
-        });
         categoryColumn.setOnEditCommit(event -> {
             Product product = event.getRowValue();
             String newCategoryName = event.getNewValue(); // Assuming the new value is a category name
@@ -368,61 +278,9 @@ public class ProductController {
             renderTables();
         });
 
-        typeColumn.setCellFactory(column -> {
-            TableCell<Product, String> cell = new TableCell<>() {
-                private final ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        typeColumn.setCellFactory(column -> ChoiceBoxTableCellFactory
+                .createCellFactory(new ChoiceBox<>(FXCollections.observableList(Arrays.stream(ProductType.values()).map(Enum::name).toList()))));
 
-                {
-                    choiceBox.getItems().addAll(Arrays.stream(ProductType.values()).map(Enum::name).toList()); // Assuming getSecondLevelCategories() returns a List<String> of categories
-                    choiceBox.setOnAction(event -> {
-                        if (isEditing()) {
-                            commitEdit(choiceBox.getValue());
-                        }
-                    });
-                }
-
-                @Override
-                public void startEdit() {
-                    super.startEdit();
-                    setText(null);
-                    setGraphic(choiceBox);
-
-                    getTableView().edit(getIndex(), getTableColumn());
-
-
-                    // Use Platform.runLater() to ensure proper initialization
-                    Platform.runLater(() -> {
-                        choiceBox.show();
-                        choiceBox.requestFocus();
-                    });
-                }
-
-                @Override
-                public void cancelEdit() {
-                    super.cancelEdit();
-                    setText(getItem());
-                    setGraphic(null);
-                }
-
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        if (isEditing()) {
-                            setGraphic(choiceBox);
-                            setText(null);
-                        } else {
-                            setText(item);
-                            setGraphic(null);
-                        }
-                    }
-                }
-            };
-            return cell;
-        });
         typeColumn.setOnEditCommit(event -> {
             Product product = event.getRowValue();
             String newType = event.getNewValue(); // Assuming the new value is a category name
@@ -438,61 +296,8 @@ public class ProductController {
             renderTables();
         });
 
-        visibleColumn.setCellFactory(column -> {
-            TableCell<Product, String> cell = new TableCell<>() {
-                private final ChoiceBox<String> choiceBox = new ChoiceBox<>();
-
-                {
-                    choiceBox.getItems().addAll("Да","Не"); // Assuming getSecondLevelCategories() returns a List<String> of categories
-                    choiceBox.setOnAction(event -> {
-                        if (isEditing()) {
-                            commitEdit(choiceBox.getValue());
-                        }
-                    });
-                }
-
-                @Override
-                public void startEdit() {
-                    super.startEdit();
-                    setText(null);
-                    setGraphic(choiceBox);
-
-                    getTableView().edit(getIndex(), getTableColumn());
-
-
-                    // Use Platform.runLater() to ensure proper initialization
-                    Platform.runLater(() -> {
-                        choiceBox.show();
-                        choiceBox.requestFocus();
-                    });
-                }
-
-                @Override
-                public void cancelEdit() {
-                    super.cancelEdit();
-                    setText(getItem());
-                    setGraphic(null);
-                }
-
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        if (isEditing()) {
-                            setGraphic(choiceBox);
-                            setText(null);
-                        } else {
-                            setText(item);
-                            setGraphic(null);
-                        }
-                    }
-                }
-            };
-            return cell;
-        });
+        visibleColumn.setCellFactory(column -> ChoiceBoxTableCellFactory
+                .createCellFactory(new ChoiceBox<>(FXCollections.observableList(List.of("Да", "Не")))));
 
         visibleColumn.setOnEditCommit(event -> {
             Product product = event.getRowValue();
@@ -500,11 +305,7 @@ public class ProductController {
             Product isProduct = productService.findByCode(product.getCode());
 
             if (isProduct != null) {
-                if(newVisibility.equals("Да")) {
-                    product.setVisible(true);
-                } else {
-                    product.setVisible(false);
-                }
+                product.setVisible(newVisibility.equals("Да"));
                 productService.addProduct(product);
             } else {
                 printMessage("Продуктот не е пронајден!", false);
@@ -540,12 +341,14 @@ public class ProductController {
         return null;
     }
 
-    public static String capitalizeFirstLetter(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-        String firstLetter = input.substring(0, 1).toUpperCase();
-        String restOfLetters = input.substring(1).toLowerCase();
-        return firstLetter + restOfLetters;
+    public ProductType getSelectedRadioButton() {
+        Toggle selectedToggle = toggleGroup.getSelectedToggle();
+        if (selectedToggle != null)
+            return selectedToggle.equals(kujnaRadio) ? ProductType.КУЈНА : ProductType.БАР;
+        return null;
+    }
+
+    public void printMessage(String message, Boolean color) {
+        MessagePrinter.printMessage(messageLabel, message, color);
     }
 }

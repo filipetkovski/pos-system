@@ -1,19 +1,17 @@
 package system.pos.javafx.controller.settingsControllers;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.spring.enumm.UserRole;
 import system.pos.spring.model.Employee;
 import system.pos.spring.service.EmployeeService;
+import system.pos.spring.utility.ChoiceBoxTableCellFactory;
+import system.pos.spring.utility.MessagePrinter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -97,61 +95,8 @@ public class EmployeeController {
             printAllEmployees();
         });
 
-        roleColumn.setCellFactory(column -> {
-            TableCell<Employee, String> cell = new TableCell<>() {
-                private final ChoiceBox<String> choiceBox = new ChoiceBox<>();
-
-                {
-                    choiceBox.getItems().addAll(Arrays.stream(UserRole.values()).map(Enum::name).toList()); // Assuming getSecondLevelCategories() returns a List<String> of categories
-                    choiceBox.setOnAction(event -> {
-                        if (isEditing()) {
-                            commitEdit(choiceBox.getValue());
-                        }
-                    });
-                }
-
-                @Override
-                public void startEdit() {
-                    super.startEdit();
-                    setText(null);
-                    setGraphic(choiceBox);
-
-                    getTableView().edit(getIndex(), getTableColumn());
-
-
-                    // Use Platform.runLater() to ensure proper initialization
-                    Platform.runLater(() -> {
-                        choiceBox.show();
-                        choiceBox.requestFocus();
-                    });
-                }
-
-                @Override
-                public void cancelEdit() {
-                    super.cancelEdit();
-                    setText(getItem());
-                    setGraphic(null);
-                }
-
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        if (isEditing()) {
-                            setGraphic(choiceBox);
-                            setText(null);
-                        } else {
-                            setText(item);
-                            setGraphic(null);
-                        }
-                    }
-                }
-            };
-            return cell;
-        });
+        roleColumn.setCellFactory(column -> ChoiceBoxTableCellFactory
+                .createCellFactory(new ChoiceBox<>(FXCollections.observableList(Arrays.stream(UserRole.values()).map(Enum::name).toList()))));
 
         roleColumn.setOnEditCommit(event -> {
             Employee employee = event.getRowValue();
@@ -237,34 +182,12 @@ public class EmployeeController {
 
     public UserRole getSelectedRadioButton() {
         Toggle selectedToggle = toggleGroup.getSelectedToggle();
-
-        if (selectedToggle == null)
-            return null;
-
-        if (selectedToggle.equals(adminRadio)) {
-            return UserRole.МЕНАЏЕР;
-        } else if (selectedToggle.equals(serverRadio)) {
-            return UserRole.ЌЕЛНЕР;
-        }
-
+        if (selectedToggle != null)
+            return selectedToggle.equals(adminRadio) ? UserRole.МЕНАЏЕР : UserRole.ЌЕЛНЕР;
         return null;
     }
 
     public void printMessage(String message, Boolean color) {
-        Platform.runLater(() -> {
-            if(color) {
-                messageLabel.setTextFill(Color.web("#27ae60"));
-            } else {
-                messageLabel.setTextFill(Color.web("#f62b2b"));
-            }
-            messageLabel.setText(message);
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                messageLabel.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
+        MessagePrinter.printMessage(messageLabel, message, color);
     }
 }

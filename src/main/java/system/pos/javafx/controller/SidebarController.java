@@ -50,15 +50,18 @@ public class SidebarController {
 
     //Open Settings from Authentication view
     public void settingAuthenticator() {
-        authenticationController.initData(this,null);
         sideBar = SideBar.SETTINGS;
-        stageListener.changeScene("/fxml/authentication.fxml");
+        openAuthenticationView();
     }
 
     //Change user working status from Authentication view
     public void shiftAuthenticator() {
-        authenticationController.initData(this,null);
         sideBar = SideBar.SHIFT;
+        openAuthenticationView();
+    }
+
+    public void openAuthenticationView() {
+        authenticationController.initData(this,null);
         stageListener.changeScene("/fxml/authentication.fxml");
     }
 
@@ -74,14 +77,8 @@ public class SidebarController {
 
     //Change the user working status
     public void changeShiftStatus(Employee employee) {
-        String status;
-        if(employee.getStatus().equals(EmployeeStatus.АКТИВЕН)) {
-            status = "ОДЈАВА";
-            employee.setStatus(EmployeeStatus.НЕАКТИВЕН);
-        } else {
-            status = "НАЈАВА";
-            employee.setStatus(EmployeeStatus.АКТИВЕН);
-        }
+        String status = employee.getStatus().equals(EmployeeStatus.АКТИВЕН) ? "ОДЈАВА" : "НАЈАВА";
+        employee.setStatus(employee.getStatus().equals(EmployeeStatus.АКТИВЕН) ? EmployeeStatus.НЕАКТИВЕН : EmployeeStatus.АКТИВЕН);
         authLogsService.save(employee,status);
         employeeService.updateEmployee(employee);
         stageListener.changeScene("/fxml/homePage.fxml");
@@ -115,7 +112,6 @@ public class SidebarController {
                     System.out.println(e);
                     return;
                 }
-
                 final String timeNow = simpleDateFormat.format(new Date());
                 Platform.runLater(()-> timeLabel.setText(timeNow));
             }

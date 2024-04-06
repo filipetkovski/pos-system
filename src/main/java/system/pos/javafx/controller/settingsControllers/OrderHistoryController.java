@@ -20,6 +20,7 @@ import system.pos.spring.enumm.Status;
 import system.pos.spring.model.Employee;
 import system.pos.spring.model.Order;
 import system.pos.spring.service.OrderService;
+import system.pos.spring.utility.MessagePrinter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,6 +65,10 @@ public class OrderHistoryController {
         printOrderHistory();
     }
 
+    public void initData(Employee employee) {
+        this.employee = employee;
+    }
+
     public void initTable() {
         orderTable.getColumns().forEach(column -> {column.setReorderable(false);column.setResizable(false);});
         orderTable.setFocusTraversable(false);
@@ -75,8 +80,7 @@ public class OrderHistoryController {
         priceColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getPrice()).asObject());
         paymentMethodColumn.setCellValueFactory(cellData -> {
             Payment paymentMethod = cellData.getValue().getPayment_method();
-            String paymentMethodName = (paymentMethod != null) ? paymentMethod.name().toUpperCase() : "";
-            return new SimpleStringProperty(paymentMethodName);
+            return new SimpleStringProperty((paymentMethod != null) ? paymentMethod.name().toUpperCase() : "");
         });
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name().toUpperCase()));
         dateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedOn()));
@@ -86,11 +90,7 @@ public class OrderHistoryController {
             @Override
             protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(formatter.format(item));
-                }
+                setText(empty || item == null ? null : formatter.format(item));
             }
         });
     }
@@ -98,7 +98,9 @@ public class OrderHistoryController {
     public void payOrder() {
         TableView.TableViewSelectionModel<Order> selectionModel = orderTable.getSelectionModel();
 
-        if(!selectionModel.isEmpty()) {
+        if(selectionModel.isEmpty()) {
+            printMessage("Мора да селектирате нарачка!", false);
+        } else {
             ObservableList<Integer> list = selectionModel.getSelectedIndices();
             Integer[] selectedIndices = new Integer[list.size()];
             selectedIndices = list.toArray(selectedIndices);
@@ -107,7 +109,10 @@ public class OrderHistoryController {
             for (Integer finalSelectedIndex : finalSelectedIndices) {
                 selectionModel.clearSelection(finalSelectedIndex);
                 Order order = orderTable.getItems().get(finalSelectedIndex);
-                if(order != null) {
+
+                if(order == null) {
+                    printMessage("Нарачката не е пронајдена!", false);
+                } else {
                     if(order.getStatus().equals(Status.НЕ_ПЛАТЕНА)) {
                         paymentController.initData(this,order,employee);
                         stageListener.changeScene("/fxml/payment.fxml");
@@ -118,12 +123,8 @@ public class OrderHistoryController {
                     } else {
                         printMessage("Нарачката  е веќе платена!", false);
                     }
-                } else {
-                    printMessage("Нарачката не е пронајдена!", false);
                 }
             }
-        } else {
-            printMessage("Мора да селектирате нарачка!", false);
         }
     }
 
@@ -133,24 +134,6 @@ public class OrderHistoryController {
     }
 
     public void printMessage(String message, Boolean color) {
-        Platform.runLater(() -> {
-            if(color) {
-                messageLabel.setTextFill(Color.web("#27ae60"));
-            } else {
-                messageLabel.setTextFill(Color.web("#f62b2b"));
-            }
-            messageLabel.setText(message);
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                messageLabel.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
-    }
-
-    public void initData(Employee employee) {
-        this.employee = employee;
+        MessagePrinter.printMessage(messageLabel, message, color);
     }
 }

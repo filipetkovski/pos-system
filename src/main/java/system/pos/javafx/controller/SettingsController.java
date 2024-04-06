@@ -38,6 +38,10 @@ public class SettingsController {
         changeIncludeSource(fxmlPath);
     }
 
+    public void initData(Employee employee) {
+        this.employee = employee;
+    }
+
     //Return button
     public void returnBack() {
         stageListener.changeScene( "/fxml/homePage.fxml");
@@ -89,9 +93,5 @@ public class SettingsController {
         } catch (Exception e) {
             System.out.println("Error");
         }
-    }
-
-    public void initData(Employee employee) {
-        this.employee = employee;
     }
 }

@@ -16,6 +16,7 @@ import system.pos.spring.model.Employee;
 import system.pos.spring.model.Order;
 import system.pos.spring.service.OrderService;
 import system.pos.spring.service.TableService;
+import system.pos.spring.utility.MessagePrinter;
 
 @Component
 public class PaymentController {
@@ -77,33 +78,33 @@ public class PaymentController {
     }
 
     public void renderData() {
+        UserRole role = employee.getE_role();
+
         codeLabel.setText(order.getCode().toString());
         nmTableLabel.setText("Маса: " + order.getTable_number());
         priceLabel.setText("Вкупно: " + order.getPrice());
-
-        UserRole role = employee.getE_role();
         discountField.setVisible(role.equals(UserRole.МЕНАЏЕР));
         discountButton.setVisible(role.equals(UserRole.МЕНАЏЕР));
     }
 
     public void calculateChange() {
         String receive = receiveField.getText();
-        if(!receive.isBlank()) {
+        if(receive.isBlank()) {
+            changeLabel.setText("Кусур: 0ден");
+        } else {
             try {
                 changeLabel.setText("Кусур: " + (Integer.parseInt(receive) - (order.getPrice()) + "ден"));
             } catch (NumberFormatException e) {
                 printMessage("Невалидна операција! Внеси број.", false);
             }
-        } else {
-            changeLabel.setText("Кусур: 0ден");
         }
     }
 
     public void finishPayment() {
         Payment pay = getSelectedRadioButton();
-        if(pay != null && !numberLabel.getText().isBlank()) {
+        String numberOfPeople = numberLabel.getText();
+        if(pay != null && !numberOfPeople.isBlank()) {
 
-            String numberOfPeople = numberLabel.getText();
             try {
                 orderService.payOrder(order, pay, Integer.parseInt(numberOfPeople));
             } catch (NumberFormatException e) {
@@ -112,11 +113,11 @@ public class PaymentController {
             }
 
             tableService.reset(tableService.findByNumber(order.getTable_number().longValue()));
-            if (callingController instanceof InsideTableController) {
+            if (callingController instanceof InsideTableController)
                 stageListener.changeScene("/fxml/homePage.fxml");
-            } else {
+            else
                 returnBack();
-            }
+
         } else {
             printMessage("Внеси ги сите податоци!", false);
         }
@@ -124,8 +125,9 @@ public class PaymentController {
 
     public void makeDiscount() {
         String percentDiscount = discountField.getText();
-        if(!percentDiscount.isBlank()) {
-
+        if(percentDiscount.isBlank()) {
+            printMessage("Внеси процент за попуст!", false);
+        } else {
             Integer price = order.getPrice();
             try {
                 order.setPrice(price - (price * Integer.parseInt(percentDiscount)) / 100);
@@ -135,8 +137,6 @@ public class PaymentController {
             }
 
             priceLabel.setText("Вкупно: " + order.getPrice());
-        } else {
-            printMessage("Внеси процент за попуст!", false);
         }
     }
 
@@ -151,34 +151,17 @@ public class PaymentController {
     public Payment getSelectedRadioButton() {
         Toggle selectedToggle = toggleGroup.getSelectedToggle();
 
-        if (selectedToggle != null) {
-            if (selectedToggle.equals(cashRadio)) {
-                return Payment.ГОТОВИНА;
-            } else if (selectedToggle.equals(cardRadio)) {
-                return Payment.КАРТИЧКА;
-            } else {
-                return Payment.ФАКТУРА;
-            }
-        }
-
-        return null;
+        if (selectedToggle == null)
+            return null;
+        else if (selectedToggle.equals(cashRadio))
+            return Payment.ГОТОВИНА;
+        else if (selectedToggle.equals(cardRadio))
+            return Payment.КАРТИЧКА;
+        else
+            return Payment.ФАКТУРА;
     }
 
     public void printMessage(String message, Boolean color) {
-        Platform.runLater(() -> {
-            if(color) {
-                messageLabel.setTextFill(Color.web("#27ae60"));
-            } else {
-                messageLabel.setTextFill(Color.web("#f62b2b"));
-            }
-            messageLabel.setText(message);
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                messageLabel.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
+        MessagePrinter.printMessage(messageLabel, message, color);
     }
 }

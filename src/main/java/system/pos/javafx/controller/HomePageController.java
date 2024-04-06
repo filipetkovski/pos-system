@@ -35,7 +35,7 @@ public class HomePageController {
     }
 
     public void createTableButtons(List<Tables> tables) {
-        for (Tables table : tables) {
+        tables.forEach(table -> {
             Button button = new Button(table.getNumber().toString());
             button.setId(table.getNumber().toString());
             if(table.getOrder() != null) { //Color green to those table-buttons that have order inside
@@ -45,7 +45,7 @@ public class HomePageController {
             }
             button.setOnAction(event -> clickTable(table)); //Activate the method by clicking on a table button
             flowPane.getChildren().add(button);
-        }
+        });
     }
 
     private void clickTable(Tables table) { //Open authentication, authenticate, so you can open the table

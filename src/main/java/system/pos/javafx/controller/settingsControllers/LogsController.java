@@ -62,11 +62,7 @@ public class LogsController {
             @Override
             protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(formatter.format(item));
-                }
+                setText(empty || item == null ? null : formatter.format(item));
             }
         });
     }

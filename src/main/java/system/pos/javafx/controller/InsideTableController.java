@@ -1,7 +1,5 @@
 package system.pos.javafx.controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -14,7 +12,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.Status;
@@ -24,6 +21,7 @@ import system.pos.spring.service.AddedProductService;
 import system.pos.spring.service.OrderService;
 import system.pos.spring.service.ProductService;
 import system.pos.spring.service.TableService;
+import system.pos.spring.utility.MessagePrinter;
 
 import java.io.ByteArrayInputStream;
 import java.time.format.DateTimeFormatter;
@@ -521,17 +519,7 @@ public class InsideTableController {
     }
 
     public void printMessage(String message, Boolean color) {
-        messageLabel.setTextFill(color ? Color.web("#27ae60") : Color.web("#f62b2b"));
-        messageLabel.setText(message);
-
-        Platform.runLater(() -> {
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                messageLabel.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
+        MessagePrinter.printMessage(messageLabel, message, color);
     }
 
 }
