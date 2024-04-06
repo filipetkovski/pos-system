@@ -1,8 +1,5 @@
 package system.pos.javafx.controller.settingsControllers;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -11,7 +8,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.controller.PaymentController;
 import system.pos.javafx.stage.StageListener;
@@ -83,7 +79,7 @@ public class OrderHistoryController {
             return new SimpleStringProperty((paymentMethod != null) ? paymentMethod.name().toUpperCase() : "");
         });
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().name().toUpperCase()));
-        statusColumn.setCellFactory(column -> new TableCell<Order, String>() {
+        statusColumn.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);

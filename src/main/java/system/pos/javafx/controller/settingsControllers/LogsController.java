@@ -12,7 +12,6 @@ import system.pos.spring.service.LogsService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Component
 public class LogsController {

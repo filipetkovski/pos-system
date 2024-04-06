@@ -6,7 +6,7 @@ import javafx.scene.control.TableCell;
 
 public class ChoiceBoxTableCellFactory<T> {
     public static <T> TableCell<T, String> createCellFactory(ChoiceBox<String> choiceBox) {
-        return new TableCell<T, String>() {
+        return new TableCell<>() {
             {
                 choiceBox.setOnAction(event -> {
                     if (isEditing())

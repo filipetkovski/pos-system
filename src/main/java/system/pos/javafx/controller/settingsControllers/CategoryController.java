@@ -29,8 +29,6 @@ public class CategoryController {
     @FXML
     private RadioButton foodRadio;
     @FXML
-    private RadioButton drinkRadio;
-    @FXML
     private TextField nameInput;
     @FXML
     private Button submitButton;

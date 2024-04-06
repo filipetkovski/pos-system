@@ -14,7 +14,7 @@ import system.pos.spring.model.Employee;
 @Component
 public class SettingsController {
     private final StageListener stageListener;
-    private OrderHistoryController orderHistoryController;
+    private final OrderHistoryController orderHistoryController;
     private final ApplicationContext applicationContext;
 
     public SettingsController(StageListener stageListener, OrderHistoryController orderHistoryController, ApplicationContext applicationContext) {

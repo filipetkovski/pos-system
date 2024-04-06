@@ -13,7 +13,6 @@ import system.pos.spring.service.AuthLogsService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Component
 public class AuthLogsController {

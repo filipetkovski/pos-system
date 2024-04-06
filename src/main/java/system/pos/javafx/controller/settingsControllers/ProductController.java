@@ -1,6 +1,5 @@
 package system.pos.javafx.controller.settingsControllers;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,7 +10,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import org.springframework.stereotype.Component;
 import system.pos.spring.enumm.ProductType;
-import system.pos.spring.enumm.UserRole;
 import system.pos.spring.model.Category;
 import system.pos.spring.model.Product;
 import system.pos.spring.service.ProductService;
@@ -35,8 +33,6 @@ public class ProductController {
 
     @FXML
     private ToggleGroup toggleGroup;
-    @FXML
-    private RadioButton barRadio;
     @FXML
     private RadioButton kujnaRadio;
     @FXML

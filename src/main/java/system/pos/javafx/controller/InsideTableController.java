@@ -202,7 +202,7 @@ public class InsideTableController {
         listener.changeScene("/fxml/authentication.fxml");
     }
 
-    public void cancelOrder() { //Canceling order, removing from the table and setting the Status to OTKAZANA
+    public void cancelOrder() { //Canceling order, removing from the table and setting the Status to ОТКАЖАНА
         orderService.changeStatus(table.getOrder(), Status.ОТКАЖАНА);
         tableService.reset(table);
 

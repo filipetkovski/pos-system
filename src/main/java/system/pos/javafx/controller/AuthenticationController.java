@@ -1,12 +1,7 @@
 package system.pos.javafx.controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.EmployeeStatus;

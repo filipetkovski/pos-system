@@ -1,8 +1,5 @@
 package system.pos.javafx.controller.settingsControllers;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -10,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.spring.enumm.Status;
 import system.pos.spring.enumm.TableRegion;
@@ -42,8 +38,6 @@ public class TableFormController {
     private RadioButton vnatreRadio;
     @FXML
     private RadioButton terasaRadio;
-    @FXML
-    private RadioButton shankRadio;
     @FXML
     private TextField numberInput;
     @FXML
