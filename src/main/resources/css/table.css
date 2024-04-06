@@ -4,7 +4,7 @@
 }
 
 .table-row-cell:filled:selected .table-cell {
-    -fx-background-color: rgba(255, 0, 0, 0.4);;
+    -fx-background-color: rgba(255, 0, 0, 0.2);;
 }
 
 .table-view .column-header-background .filler {

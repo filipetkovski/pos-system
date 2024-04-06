@@ -12,7 +12,7 @@
             <TableView fx:id="logTable" prefHeight="730.0" prefWidth="1168.0">
                 <columns>
                     <TableColumn fx:id="idColumn" prefWidth="75.46217346191406" text="КОД" />
-                    <TableColumn fx:id="employeeColumn" minWidth="0.0" prefWidth="188.0" text="КОРИСНИК" />
+                    <TableColumn fx:id="employeeColumn" minWidth="0.0" prefWidth="188.0" text="ЌЕЛНЕР" />
                     <TableColumn fx:id="productColumn" prefWidth="177.0" text="ПРОДУКТ" />
                     <TableColumn fx:id="orderColumn" prefWidth="173.0" text="НАРАЧКА" />
                     <TableColumn fx:id="tableColumn" prefWidth="108.0" text="МАСА" />

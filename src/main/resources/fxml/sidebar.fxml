@@ -28,7 +28,7 @@
       <Line endX="65.5" startX="-100.0" />
       <VBox fx:id="usersListBox" prefHeight="264.0" prefWidth="215.0" />
    </VBox>
-   <Label fx:id="timeLabel" layoutX="55.0" layoutY="898.0" prefHeight="50.0" prefWidth="167.0">
+   <Label fx:id="timeLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="55.0" layoutY="898.0" prefHeight="50.0" prefWidth="167.0">
       <font>
          <Font size="40.0" />
       </font>
