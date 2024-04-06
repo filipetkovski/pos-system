@@ -42,8 +42,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findBySerach(String serachText) {
-        return productRepository.findAll().stream().filter(product -> product.getName().toLowerCase().contains(serachText) || product.getCategory().getName().toLowerCase().contains(serachText)).collect(Collectors.toList());
+    public List<Product> findBySearch(String searchText) {
+        return productRepository.findAll().stream()
+                .filter(product -> product.getName().toLowerCase().contains(searchText) || product.getCategory().getName().toLowerCase().contains(searchText) || product.getCategory().getSupercategory().getName().toLowerCase().contains(searchText))
+                .collect(Collectors.toList());
     }
 
     @Override
