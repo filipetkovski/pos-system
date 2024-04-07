@@ -136,12 +136,12 @@
                   <Font size="30.0" />
                </font>
             </Button>
-            <Button fx:id="closeTableButton" mnemonicParsing="false" onAction="#closeTable" prefHeight="57.0" prefWidth="240.0" style="-fx-background-color: #f62b2b; -fx-text-fill: white;" text="ЗАТВОРИ" textFill="#030303" visible="#hasOrder">
+            <Button fx:id="holdButton" mnemonicParsing="false" onAction="#holdOrder" prefHeight="50.0" prefWidth="240.0" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="ЧЕКАЊЕ" textFill="#030303">
                <font>
                   <Font size="30.0" />
                </font>
             </Button>
-            <Button fx:id="holdButton" mnemonicParsing="false" onAction="#holdOrder" prefHeight="50.0" prefWidth="240.0" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="ЧЕКАЊЕ" textFill="#030303">
+            <Button fx:id="closeTableButton" mnemonicParsing="false" onAction="#closeTable" prefHeight="57.0" prefWidth="240.0" style="-fx-background-color: #f62b2b; -fx-text-fill: white;" text="ЗАТВОРИ" textFill="#030303" visible="#hasOrder">
                <font>
                   <Font size="30.0" />
                </font>
