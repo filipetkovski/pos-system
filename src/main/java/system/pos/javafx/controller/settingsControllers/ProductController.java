@@ -261,11 +261,10 @@ public class ProductController {
 
         categoryColumn.setOnEditCommit(event -> {
             Product product = event.getRowValue();
-            String newCategoryName = event.getNewValue(); // Assuming the new value is a category name
             Product isProduct = productService.findByCode(product.getCode());
 
             if (isProduct != null) {
-                product.setCategory(productService.findCategoryByName(newCategoryName));
+                product.setCategory(productService.findCategoryByName(event.getNewValue())); // Assuming the new value is a category name
                 productService.addProduct(product);
             } else {
                 printMessage("Категоријата не е пронајдена!", false);
@@ -279,11 +278,10 @@ public class ProductController {
 
         typeColumn.setOnEditCommit(event -> {
             Product product = event.getRowValue();
-            String newType = event.getNewValue(); // Assuming the new value is a category name
             Product isProduct = productService.findByCode(product.getCode());
 
             if (isProduct != null) {
-                product.setType(ProductType.valueOf(newType));
+                product.setType(ProductType.valueOf(event.getNewValue())); // Assuming the new value is a category name
                 productService.addProduct(product);
             } else {
                 printMessage("Категоријата не е пронајдена!", false);
@@ -297,11 +295,10 @@ public class ProductController {
 
         visibleColumn.setOnEditCommit(event -> {
             Product product = event.getRowValue();
-            String newVisibility = event.getNewValue(); // Assuming the new value is a category name
             Product isProduct = productService.findByCode(product.getCode());
 
             if (isProduct != null) {
-                product.setVisible(newVisibility.equals("Да"));
+                product.setVisible(event.getNewValue().equals("Да")); // Assuming the new value is a category name
                 productService.addProduct(product);
             } else {
                 printMessage("Продуктот не е пронајден!", false);
