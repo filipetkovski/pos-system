@@ -89,7 +89,7 @@ public class OrderHistoryController {
                     setStyle("");
                 } else {
                     setText(item);
-                    setTextFill(item.equalsIgnoreCase("НЕ_ПЛАТЕНА") ? Color.PURPLE : (item.equalsIgnoreCase("ОТКАЖАНА") ? Color.RED : Color.BLACK) );
+                    setTextFill(item.equalsIgnoreCase("НЕ_ПЛАТЕНА") ? Color.BLUE : (item.equalsIgnoreCase("ОТКАЖАНА") ? Color.RED : Color.BLACK) );
                 }
             }
         });
