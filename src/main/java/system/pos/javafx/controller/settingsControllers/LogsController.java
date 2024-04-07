@@ -32,6 +32,8 @@ public class LogsController {
     @FXML
     private TableColumn<Log, Long> orderColumn;
     @FXML
+    private TableColumn<Log, Integer> quantityColumn;
+    @FXML
     private TableColumn<Log, Integer> tableColumn;
     @FXML
     private TableColumn<Log, String> statusColumn;
@@ -53,6 +55,7 @@ public class LogsController {
         productColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().toUpperCase()));
         orderColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getOrder_code()).asObject());
         tableColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getTable_number()).asObject());
+        quantityColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity()).asObject());
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().toUpperCase()));
         dateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreated_on()));
 

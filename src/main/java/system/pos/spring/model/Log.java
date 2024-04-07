@@ -23,6 +23,7 @@ public class Log {
     Long order_code;
     Integer table_number;
     String status;
+    Integer quantity;
     @Column(name = "created_on", updatable = false)
     LocalDateTime created_on;
 }
