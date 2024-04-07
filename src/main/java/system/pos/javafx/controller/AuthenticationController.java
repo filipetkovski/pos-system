@@ -76,14 +76,14 @@ public class AuthenticationController {
                     } else {
                         returnAuthToken();
                     }
-                } else {
+                } else if(openTable != null) {
                     if(employee.getStatus().equals(EmployeeStatus.НЕАКТИВЕН)) {
                         printMessage("Не сте на смена.", false);
                     } else {
-                        if(openTable.getOrder() == null || employee.getCode().equals(openTable.getOrder().getEmployee().getCode()) || employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
-                            returnAuthToken();
-                        } else {
+                        if(openTable.getOrder() != null && !employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
                             printMessage("Ќелнер: " + openTable.getOrder().getEmployee().getName(), false);
+                        } else {
+                            returnAuthToken();
                         }
                     }
                 }
