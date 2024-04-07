@@ -115,7 +115,7 @@ public class InsideTableController {
 
             border.setOnKeyPressed(this::handleKeyPressed);
             openTableButton.setVisible(!hasOrder()); //Disable the button ones it's clicked and the table is open
-            closeTableButton.setVisible(hasOrder() && isValidEmployee()); //Visible to those who have opened the tables
+            closeTableButton.setVisible(hasOrder() && employee.getE_role().equals(UserRole.МЕНАЏЕР)); //Visible to those who have opened the tables
             searchHBox.setVisible(hasOrder() && isValidEmployee());
             payButton.setVisible(hasOrder() && isValidEmployee());
             holdButton.setVisible(hasOrder() && isValidEmployee());
@@ -137,11 +137,11 @@ public class InsideTableController {
         } else if(keyEvent.getCode() == KeyCode.DIGIT1) {
             showMenu(productService.getTopCategories());
         } else if(keyEvent.getCode() == KeyCode.F1) {
-            closeTable();
+            pay();
         } else if(keyEvent.getCode() == KeyCode.F2) {
             holdOrder();
-        } else if(keyEvent.getCode() == KeyCode.F3) {
-            pay();
+        } else if(keyEvent.getCode() == KeyCode.F3 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+            closeTable();
         } else if(keyEvent.getCode() != KeyCode.ENTER) {
             searchInput.setText(searchInput.getText() + keyEvent.getText());
             searchButton.setDefaultButton(true);

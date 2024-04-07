@@ -70,6 +70,12 @@ public class AuthenticationController {
                     } else {
                         returnAuthToken();
                     }
+                } if(callingController instanceof InsideTableController) {
+                    if(!employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+                        printMessage("Не сте овластени!", false);
+                    } else {
+                        returnAuthToken();
+                    }
                 } else {
                     if(employee.getStatus().equals(EmployeeStatus.НЕАКТИВЕН)) {
                         printMessage("Не сте на смена.", false);
