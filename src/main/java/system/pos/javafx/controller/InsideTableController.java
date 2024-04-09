@@ -244,16 +244,16 @@ public class InsideTableController {
                     productBox.setId("productBox");
                     productBox.setFocusTraversable(true); // Make the VBox focusable
 
-                    Label productName = new Label(product.getName());
+                    Label productName = new Label(CapitalizeFirstLetter.capitalizeFirstLetter(product.getName()));
                     productName.setId("productName");
 
                     ImageView productImage = createImage(product);
                     productBox.getChildren().addAll(productImage, productName);
-                    productBox.setStyle("-fx-border-color: transparent; -fx-border-width: 2;");
+                    productBox.setStyle("-fx-border-color: transparent; -fx-border-width: 2; -fx-spacing: 2px;");
                     productBox.setUserData(product);
 
                     productBox.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-                        productBox.setStyle(isNowFocused ? "-fx-border-color: #f62b2b; -fx-border-width: 2;" : "-fx-border-color: transparent; -fx-border-width: 2;");
+                        productBox.setStyle(isNowFocused ? "-fx-border-color: #f62b2b; -fx-border-width: 2; -fx-spacing: 2px;" : "-fx-border-color: transparent; -fx-border-width: 2; -fx-spacing: 2px;");
                     });
 
                     return productBox;
