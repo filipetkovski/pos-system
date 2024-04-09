@@ -3,11 +3,16 @@ package system.pos.javafx.controller.settingsControllers;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.Pane;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.controller.SettingsController;
+import system.pos.spring.exception.SettingsViewException;
 import system.pos.spring.model.AddedProduct;
 import system.pos.spring.model.Order;
 import system.pos.spring.utility.CapitalizeFirstLetter;
@@ -17,10 +22,13 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class OrderViewController {
-
-    public OrderViewController() {
+    private final ApplicationContext applicationContext;
+    public OrderViewController(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
+    @FXML
+    private Pane pane;
     @FXML
     private TableView<AddedProduct> addedProductTable;
     @FXML
@@ -89,5 +97,16 @@ public class OrderViewController {
     public void printOrderHistory() {
         addedProductTable.getItems().clear();
         order.getProducts().forEach(orderLog -> addedProductTable.getItems().add(orderLog));
+    }
+
+    public void back() throws SettingsViewException {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/orderHistory.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);
+            Parent newContent = loader.load();
+            pane.getChildren().setAll(newContent);
+        } catch (Exception e) {
+            throw new SettingsViewException("Can't find the view to open.");
+        }
     }
 }
