@@ -211,7 +211,7 @@ public class ProductController {
                         String name = CapitalizeFirstLetter.capitalizeFirstLetter(event.getNewValue());
                         if(!name.isBlank()) {
                             if(!productService.findByProductName(name)) {
-                                product.setName(name);
+                                product.setName(name.toUpperCase());
                                 productService.addProduct(product);
                             } else {
                                 printMessage("Постои продукт со исто име!", false);

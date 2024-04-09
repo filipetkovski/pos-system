@@ -136,7 +136,7 @@ public class CategoryController {
             if(isCategory != null) {
                 String name = CapitalizeFirstLetter.capitalizeFirstLetter(event.getNewValue());
                 if(!name.isBlank()) {
-                    category.setName(name);
+                    category.setName(name.toUpperCase());
                     productService.addCategory(category);
                 } else {
                     printMessage("Името не смее да е празно!", false);

@@ -81,7 +81,7 @@ public class EmployeeController {
             if(isEmployee != null) {
                 String name = event.getNewValue();
                 if(!name.isBlank()) {
-                    employee.setName(name);
+                    employee.setName(name.toUpperCase());
                     employeeService.updateEmployee(employee);
                 } else {
                     printMessage("Мора да внесете име!",false);
