@@ -128,7 +128,7 @@ public class ProductController {
         if (nameInput.getText().isBlank() || priceInput.getText().isBlank() || categoryChoice.getValue() == null || toggleGroup.getSelectedToggle() == null) {
             printMessage("Потполни ги сите податоци!", false);
         } else {
-            String name = nameInput.getText();
+            String name = nameInput.getText().toUpperCase();
             String priceText = priceInput.getText();
 
             int price;
@@ -208,7 +208,7 @@ public class ProductController {
                     .filter(element -> element.getCode().equals(product.getCode()))
                     .findFirst()
                     .ifPresent(existingProduct -> {
-                        String name = CapitalizeFirstLetter.capitalizeFirstLetter(event.getNewValue());
+                        String name = event.getNewValue();
                         if(!name.isBlank()) {
                             if(!productService.findByProductName(name)) {
                                 product.setName(name.toUpperCase());
