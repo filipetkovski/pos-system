@@ -8,6 +8,7 @@ import system.pos.javafx.stage.StageListener;
 import system.pos.spring.model.Employee;
 import system.pos.spring.model.Tables;
 import system.pos.spring.service.TableService;
+import system.pos.spring.utility.CapitalizeFirstLetter;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class HomePageController {
             if(table.getOrder() != null) { //Color green to those table-buttons that have order inside
                 button.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;");
                 button.setText(table.getNumber() + "\n"
-                        + table.getOrder().getEmployee().getName());
+                        + CapitalizeFirstLetter.capitalizeFirstLetter(table.getOrder().getEmployee().getName()));
             }
             button.setOnAction(event -> clickTable(table)); //Activate the method by clicking on a table button
             flowPane.getChildren().add(button);
