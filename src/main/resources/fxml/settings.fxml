@@ -18,6 +18,11 @@
             </Button>
             <Label />
             <Label />
+            <Button mnemonicParsing="false" onAction="#openAnalysis" prefHeight="60.0" prefWidth="170.0" styleClass="buttonCss" text="Промет">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Button>
             <Button layoutX="170.0" layoutY="120.0" mnemonicParsing="false" onAction="#openNewUser" prefHeight="60.0" prefWidth="170.0" styleClass="buttonCss" text="Корисници">
                <font>
                   <Font size="20.0" />
