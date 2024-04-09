@@ -36,7 +36,7 @@ public class OrderViewController {
     @FXML
     private TableColumn<AddedProduct, Integer> quantityColumn;
     @FXML
-    private TableColumn<AddedProduct, String> descriptionColumn;
+    private TableColumn<AddedProduct, Integer> priceColumn;
     @FXML
     private Label codeLabel;
     @FXML
@@ -91,7 +91,7 @@ public class OrderViewController {
 
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getName()));
         quantityColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity()).asObject());
-        descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+        priceColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity() * cellData.getValue().getProduct().getPrice()).asObject());
     }
 
     public void printOrderHistory() {
