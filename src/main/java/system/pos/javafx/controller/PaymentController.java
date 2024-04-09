@@ -152,14 +152,17 @@ public class PaymentController {
             printMessage("Внеси процент за попуст!", false);
         } else {
             Integer price = order.getPrice();
+            Integer percent;
             try {
-                order.setPrice(price - (price * Integer.parseInt(percentDiscount)) / 100);
-                orderService.save(order);
+                percent = Integer.parseInt(percentDiscount);
             } catch (NumberFormatException e) {
                 printMessage("Невалидна оперцаија! Внеси број.", false);
                 return;
             }
 
+            order.setPrice(price - (price * percent) / 100);
+            order.setDiscount(percent);
+            orderService.save(order);
             priceLabel.setText("Вкупно: " + order.getPrice());
             calculateChange();
         }
