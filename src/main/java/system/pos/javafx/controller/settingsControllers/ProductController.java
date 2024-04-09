@@ -81,7 +81,7 @@ public class ProductController {
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         categoryColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory().getName()));
         typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType().toString()));
-        visibleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isVisible() ? "True" : "False"));
+        visibleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isVisible() ? "TRUE" : "FALSE"));
         priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPrice().toString()));
         imageColumn.setCellFactory(param -> new TableCell<>() {
             private final Button button = new Button("Add");

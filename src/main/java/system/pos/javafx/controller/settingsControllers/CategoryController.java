@@ -54,7 +54,7 @@ public class CategoryController {
         categoryTable.getColumns().forEach(column -> {column.setReorderable(false);column.setResizable(false);});
         categoryTable.setFocusTraversable(false);
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        visibleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isVisible() ? "True" : "False"));
+        visibleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isVisible() ? "TRUE" : "FALSE"));
         supCatColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupercategory().getName()));
 
         editTable();
@@ -72,7 +72,7 @@ public class CategoryController {
         if (nameInput.getText().isBlank() || toggleGroup.getSelectedToggle() == null) {
             printMessage("Внеси ги сите податоци.", false);
         } else {
-            String name = CapitalizeFirstLetter.capitalizeFirstLetter(nameInput.getText());
+            String name = CapitalizeFirstLetter.capitalizeFirstLetter(nameInput.getText()).toUpperCase();
 
             String supercategory = getSelectedRadioButton();
 

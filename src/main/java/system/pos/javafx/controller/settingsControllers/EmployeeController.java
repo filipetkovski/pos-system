@@ -57,7 +57,7 @@ public class EmployeeController {
         userTable.getColumns().forEach(column -> {column.setReorderable(false);column.setResizable(false);});
         userTable.setFocusTraversable(false);
 
-        codeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCode().toString().toUpperCase()));
+        codeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCode().toString()));
         roleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getE_role().toString()));
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
@@ -148,7 +148,7 @@ public class EmployeeController {
             printMessage("Внеси ги сите податоци", false);
         } else {
             String code = codeInput.getText();
-            String name = nameInput.getText();
+            String name = nameInput.getText().toUpperCase();
             UserRole role = getSelectedRadioButton();
 
             long parseCode;

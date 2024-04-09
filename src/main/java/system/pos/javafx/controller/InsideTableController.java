@@ -321,7 +321,7 @@ public class InsideTableController {
     }
 
     public Button createCategoryButton(Category category) { //Creating category labels
-        Button categoryButton = new Button(category.getName());
+        Button categoryButton = new Button(CapitalizeFirstLetter.capitalizeFirstLetter(category.getName()));
         categoryButton.setId("categoryLabel");
         categoryButton.setOnMouseClicked(event -> showCategories(category));
         return categoryButton;
