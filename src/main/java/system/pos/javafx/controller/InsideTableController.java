@@ -330,8 +330,8 @@ public class InsideTableController {
     private ImageView createImage(Product product) {
         ImageView productImage = new ImageView();
 
-        productImage.setFitWidth(160);
-        productImage.setFitHeight(160);
+        productImage.setFitWidth(165);
+        productImage.setFitHeight(165);
         productImage.setId(product.getCode().toString());
         productImage.setOnMouseClicked(event -> handleItemClick(product));
         productImage.setImage(product.getImage() != null ? new Image(new ByteArrayInputStream(product.getImage())) : null);

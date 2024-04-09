@@ -187,7 +187,7 @@ public class CategoryController {
     public String getSelectedRadioButton() {
         Toggle selectedToggle = toggleGroup.getSelectedToggle();
         if (selectedToggle != null)
-            return selectedToggle.equals(foodRadio) ? "Храна" : "Пијалоци";
+            return selectedToggle.equals(foodRadio) ? "ХРАНА" : "ПИЈАЛОЦИ";
         return null;
     }
 
