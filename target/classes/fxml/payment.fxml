@@ -11,14 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024.0" prefWidth="1920.0" stylesheets="/css/button.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="system.pos.javafx.controller.PaymentController">
+<BorderPane fx:id="border" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024.0" prefWidth="1920.0" stylesheets="/css/button.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="system.pos.javafx.controller.PaymentController">
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <Button fx:id="backButton" layoutX="41.0" layoutY="35.0" mnemonicParsing="false" onAction="#returnBack" text="Назад">
-            <font>
-               <Font size="25.0" />
-            </font>
-         </Button>
          <HBox alignment="CENTER" layoutX="13.0" layoutY="231.0" prefHeight="797.0" prefWidth="1918.0" style="-fx-spacing: 80px;">
             <children>
                <VBox prefHeight="797.0" prefWidth="356.0" style="-fx-spacing: 15px;">
@@ -37,7 +32,7 @@
                         <Font size="35.0" />
                      </font>
                   </Label>
-                  <Label fx:id="changeLabel" alignment="TOP_LEFT" prefHeight="70.0" prefWidth="356.0" text=" Кусур: 0ден">
+                  <Label fx:id="changeLabel" alignment="TOP_LEFT" prefHeight="59.0" prefWidth="356.0" text="Кусур: 0ден">
                      <font>
                         <Font size="30.0" />
                      </font>
@@ -80,20 +75,6 @@
                            </font>
                         </RadioButton>
                      </HBox>
-                     <HBox alignment="CENTER" prefHeight="60.0" prefWidth="619.0">
-                        <children>
-                           <Label prefHeight="73.0" prefWidth="310.0" text="Примено">
-                              <font>
-                                 <Font size="30.0" />
-                              </font>
-                           </Label>
-                           <TextField fx:id="receiveField" onKeyTyped="#calculateChange" prefHeight="50.0" prefWidth="520.0" promptText="Примено...">
-                              <font>
-                                 <Font size="25.0" />
-                              </font>
-                           </TextField>
-                        </children>
-                     </HBox>
                      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="653.0">
                         <children>
                            <Label prefHeight="60.0" prefWidth="310.0" text="Број на особи">
@@ -102,6 +83,20 @@
                               </font>
                            </Label>
                            <TextField fx:id="numberLabel" prefHeight="50.0" prefWidth="520.0" promptText="Број на особи...">
+                              <font>
+                                 <Font size="25.0" />
+                              </font>
+                           </TextField>
+                        </children>
+                     </HBox>
+                     <HBox alignment="CENTER" prefHeight="60.0" prefWidth="619.0">
+                        <children>
+                           <Label prefHeight="73.0" prefWidth="310.0" text="Примено">
+                              <font>
+                                 <Font size="30.0" />
+                              </font>
+                           </Label>
+                           <TextField fx:id="receiveField" onKeyTyped="#calculateChange" prefHeight="50.0" prefWidth="520.0" promptText="Примено...">
                               <font>
                                  <Font size="25.0" />
                               </font>
@@ -131,6 +126,11 @@
                </VBox>
             </children>
          </HBox>
+         <Button fx:id="backButton" layoutX="41.0" layoutY="35.0" mnemonicParsing="false" onAction="#returnBack" text="Назад">
+            <font>
+               <Font size="25.0" />
+            </font>
+         </Button>
       </AnchorPane>
    </center>
 </BorderPane>
