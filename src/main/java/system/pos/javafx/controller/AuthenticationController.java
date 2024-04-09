@@ -80,7 +80,7 @@ public class AuthenticationController {
                     if(employee.getStatus().equals(EmployeeStatus.НЕАКТИВЕН)) {
                         printMessage("Не сте на смена.", false);
                     } else {
-                        if(openTable.getOrder() != null && !employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+                        if(openTable.getOrder() != null && !openTable.getOrder().getEmployee().getName().equals(employee.getName()) && !employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
                             printMessage("Ќелнер: " + openTable.getOrder().getEmployee().getName(), false);
                         } else {
                             returnAuthToken();
