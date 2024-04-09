@@ -31,17 +31,14 @@ public class OrderServiceImpl implements OrderService {
         if(!addedProducts.isEmpty()) {
             for (AddedProduct newProduct : products) {
                 boolean found = false;
-                for (AddedProduct existingProduct : addedProducts) {
-                    //Check if the product already exist in the List
-                    if (existingProduct.getProduct().getCode().equals(newProduct.getProduct().getCode())) {
-                        // Update quantity and concatenate description if product already exists
+                for (AddedProduct existingProduct : addedProducts) { //Check if the product already exist in the List
+                    if (existingProduct.getProduct().getCode().equals(newProduct.getProduct().getCode())) {  // Update quantity and concatenate description if product already exists
                         addedProductService.updateProduct(existingProduct, newProduct);
                         found = true;
                         break;
                     }
                 }
-                if (!found) {
-                    // Add the new product if it doesn't exist in the addedProducts list
+                if (!found) { // Add the new product if it doesn't exist in the addedProducts list
                     addedProducts.add(newProduct);
                     addedProductService.saveProduct(newProduct);
                 }
@@ -51,11 +48,10 @@ public class OrderServiceImpl implements OrderService {
             addedProductService.saveProducts(addedProducts);
         }
 
-        //Get the total price from every product
-        Integer totalPrice = addedProducts.stream().mapToInt(added -> added.getQuantity() * added.getProduct().getPrice()).sum();
+        Integer totalPrice = addedProducts.stream()
+                .mapToInt(added -> added.getQuantity() * added.getProduct().getPrice()).sum(); //Get the total price from every product
 
-        //Update products in the order object
-        order.setProducts(addedProducts);
+        order.setProducts(addedProducts); //Update products in the order object
         order.setPrice(totalPrice);
         save(order);
     }
@@ -100,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
         order.setProducts(new ArrayList<>());
         order.setNumber_people(0);
         order.setTable_number(tableNumber);
+        order.setDiscount(0);
         return orderRepository.save(order);
     }
 

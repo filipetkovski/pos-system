@@ -15,19 +15,19 @@
          <children>
             <Label fx:id="codeLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="63.0" prefWidth="447.0" style="-fx-background-color: #3498db;" text="КОД" textFill="WHITE">
                <font>
-                  <Font size="45.0" />
+                  <Font size="35.0" />
                </font>
             </Label>
-            <HBox prefHeight="88.0" prefWidth="449.0">
+            <HBox prefHeight="63.0" prefWidth="449.0">
                <children>
-                  <Label alignment="BOTTOM_LEFT" prefHeight="84.0" prefWidth="187.0" text="Маса:">
+                  <Label alignment="BOTTOM_LEFT" prefHeight="84.0" prefWidth="134.0" text="Маса:">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                   <Label fx:id="tableLabel" alignment="BOTTOM_RIGHT" prefHeight="94.0" prefWidth="368.0">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                </children>
@@ -37,12 +37,12 @@
                <children>
                   <Label prefHeight="37.0" prefWidth="292.0" text="Цена:">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                   <Label fx:id="priceLabel" alignment="BOTTOM_RIGHT" prefHeight="37.0" prefWidth="576.0">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                </children>
@@ -52,12 +52,12 @@
                <children>
                   <Label alignment="TOP_LEFT" prefHeight="37.0" prefWidth="372.0" text="Ќелнер:">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                   <Label fx:id="employeeLabel" alignment="BOTTOM_RIGHT" prefHeight="37.0" prefWidth="576.0">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                </children>
@@ -67,12 +67,12 @@
                <children>
                   <Label prefHeight="37.0" prefWidth="111.0" text="Метод:">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                   <Label fx:id="paymentLabel" alignment="BOTTOM_RIGHT" prefHeight="37.0" prefWidth="346.0">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                </children>
@@ -82,12 +82,12 @@
                <children>
                   <Label fx:id="statusLabel" prefHeight="37.0" prefWidth="136.0" text="Статус:">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                   <Label fx:id="statusLabel" alignment="BOTTOM_RIGHT" prefHeight="37.0" prefWidth="346.0">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                </children>
@@ -97,12 +97,12 @@
                <children>
                   <Label fx:id="numberLabel" prefHeight="37.0" prefWidth="292.0" text="Бр. на особи:">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                   <Label fx:id="numberLabel" alignment="BOTTOM_RIGHT" prefHeight="37.0" prefWidth="383.0">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                </children>
@@ -112,12 +112,12 @@
                <children>
                   <Label fx:id="discountLabel" prefHeight="37.0" prefWidth="160.0" text="Попуст:">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                   <Label fx:id="discountLabel" alignment="BOTTOM_RIGHT" prefHeight="37.0" prefWidth="383.0">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="25.0" />
                      </font>
                   </Label>
                </children>
