@@ -175,7 +175,7 @@ public class InsideTableController {
     public void print() {
         tableNumber.setText("Маса: " + table.getNumber() + " - " + CapitalizeFirstLetter.capitalizeFirstLetter(table.getRegion().toString()));
         if(table.getOrder() == null) {
-            employeeName.setText(employee.getName());
+            employeeName.setText("Ќелнер: " + employee.getName());
         } else {
             Order order = table.getOrder();
             Employee tableEmployee = table.getOrder().getEmployee();
