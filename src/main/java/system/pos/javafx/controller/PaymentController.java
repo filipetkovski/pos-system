@@ -1,7 +1,11 @@
 package system.pos.javafx.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.controller.settingsControllers.OrderHistoryController;
 import system.pos.javafx.stage.StageListener;
@@ -27,6 +31,8 @@ public class PaymentController {
     }
 
     @FXML
+    private BorderPane border;
+    @FXML
     private ToggleGroup toggleGroup;
     @FXML
     private Label messageLabel;
@@ -36,6 +42,8 @@ public class PaymentController {
     private RadioButton cashRadio;
     @FXML
     private RadioButton cardRadio;
+    @FXML
+    private RadioButton invoiceRadio;
     @FXML
     private Button submitButton;
     @FXML
@@ -62,6 +70,8 @@ public class PaymentController {
     public void initialize() {
         backButton.setCancelButton(true);
         submitButton.setDefaultButton(true);
+        border.setOnKeyPressed(this::handleKeyPressed);
+        Platform.runLater(numberLabel::requestFocus);
 
         renderData();
     }
@@ -70,6 +80,24 @@ public class PaymentController {
         this.callingController = callingController;
         this.order = order;
         this.employee = employee;
+    }
+
+    private void handleKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.F1) {
+            cashRadio.setSelected(true);
+        } else if (keyEvent.getCode() == KeyCode.F2) {
+            cardRadio.setSelected(true);
+        } else if (keyEvent.getCode() == KeyCode.F3) {
+            invoiceRadio.setSelected(true);
+        } else if(keyEvent.getCode() == KeyCode.F4) {
+            numberLabel.requestFocus();
+        } else if(keyEvent.getCode() == KeyCode.F5) {
+            receiveField.requestFocus();
+        } else if(keyEvent.getCode() == KeyCode.F6 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+            discountField.requestFocus();
+        } else if(keyEvent.getCode() != KeyCode.F7) {
+            //Payment Fee
+        }
     }
 
     public void renderData() {
@@ -98,8 +126,8 @@ public class PaymentController {
     public void finishPayment() {
         Payment pay = getSelectedRadioButton();
         String numberOfPeople = numberLabel.getText();
-        if(pay != null && !numberOfPeople.isBlank()) {
 
+        if(pay != null && !numberOfPeople.isBlank()) {
             try {
                 orderService.payOrder(order, pay, Integer.parseInt(numberOfPeople));
             } catch (NumberFormatException e) {
@@ -133,6 +161,7 @@ public class PaymentController {
             }
 
             priceLabel.setText("Вкупно: " + order.getPrice());
+            calculateChange();
         }
     }
 
