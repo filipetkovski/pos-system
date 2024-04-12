@@ -72,7 +72,7 @@ public class CategoryController {
         if (nameInput.getText().isBlank() || toggleGroup.getSelectedToggle() == null) {
             printMessage("Внеси ги сите податоци.", false);
         } else {
-            String name = CapitalizeFirstLetter.capitalizeFirstLetter(nameInput.getText()).toUpperCase();
+            String name = nameInput.getText().toUpperCase();
 
             String supercategory = getSelectedRadioButton();
 
