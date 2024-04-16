@@ -42,11 +42,20 @@
                         <Font size="25.0" />
                      </font>
                   </TextField>
-                  <Button fx:id="discountButton" mnemonicParsing="false" onAction="#makeDiscount" prefHeight="50.0" prefWidth="120.0" styleClass="buttonCss" text="Попуст">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Button>
+                  <HBox prefHeight="52.0" prefWidth="356.0" style="-fx-spacing: 10px;">
+                     <children>
+                        <Button fx:id="discountButton" mnemonicParsing="false" onAction="#makeDiscount" prefHeight="50.0" prefWidth="184.0" styleClass="buttonCss" text="Попуст">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetDiscount" prefHeight="50.0" prefWidth="184.0" styleClass="buttonCss" text="Ресетирај">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
                </VBox>
                <VBox prefHeight="414.0" prefWidth="617.0" style="-fx-spacing: 15px;">
                   <children>

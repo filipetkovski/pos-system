@@ -61,7 +61,7 @@
                      <Font size="25.0" />
                   </font>
                </Button>
-               <Button fx:id="openTableButton" mnemonicParsing="false" onAction="#openTable" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="OPEN TABLE" textFill="#030303" visible="#hasOrder">
+               <Button fx:id="openTableButton" mnemonicParsing="false" onAction="#openTable" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="ОТВОРИ" textFill="#030303" visible="#hasOrder">
                   <font>
                      <Font size="25.0" />
                   </font>

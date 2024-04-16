@@ -26,4 +26,8 @@ public interface OrderService {
     Order findByCode(Long code);
 
     void payOrder(Order order, Payment pay, int number);
+
+    void resetDiscount(Order order);
+
+    void makeDiscount(Order order, Integer price, Integer percent);
 }
