@@ -57,8 +57,6 @@ public class PaymentController {
     @FXML
     private Button discountButton;
     @FXML
-    private Button resetButton;
-    @FXML
     private Button backButton;
     @FXML
     private TextField receiveField;
@@ -97,12 +95,8 @@ public class PaymentController {
             receiveField.requestFocus();
         } else if(keyEvent.getCode() == KeyCode.F6 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
             discountField.requestFocus();
-        } else if(keyEvent.getCode() == KeyCode.F7 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
-            makeDiscount();
-        } else if(keyEvent.getCode() == KeyCode.F8 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
-            resetDiscount();
-        } else if(keyEvent.getCode() == KeyCode.F9) {
-            //PRINT PAYCHECK
+        } else if(keyEvent.getCode() != KeyCode.F7) {
+            //Payment Fee
         }
     }
 
@@ -111,10 +105,9 @@ public class PaymentController {
 
         codeLabel.setText(order.getCode().toString());
         nmTableLabel.setText("Маса: " + order.getTable_number());
-        setPriceLabel();
+        priceLabel.setText("Вкупно: " + order.getPrice());
         discountField.setVisible(role.equals(UserRole.МЕНАЏЕР));
         discountButton.setVisible(role.equals(UserRole.МЕНАЏЕР));
-        resetButton.setVisible(role.equals(UserRole.МЕНАЏЕР));
     }
 
     public void calculateChange() {
@@ -167,30 +160,12 @@ public class PaymentController {
                 return;
             }
 
-            if(percent < 0 || percent > 100) {
-                printMessage("Внесете вредност од (0 - 100)",false);
-            } else {
-                orderService.makeDiscount(order,price, percent);
-                printMessage("Успешно направен попуст",true);
-                setPriceLabel();
-            }
+            order.setPrice(price - (price * percent) / 100);
+            order.setDiscount(percent);
+            orderService.save(order);
+            priceLabel.setText("Вкупно: " + order.getPrice());
+            calculateChange();
         }
-    }
-
-    public void resetDiscount() {
-        if(order.getDiscount() == null || order.getDiscount() == 0) {
-            printMessage("Нарачката нема попуст!",false);
-        } else {
-            orderService.resetDiscount(order);
-            printMessage("Успешно ресетиран попуст",true);
-            setPriceLabel();
-        }
-    }
-
-    public void setPriceLabel() {
-        calculateChange();
-        discountField.setText("");
-        priceLabel.setText("Вкупно: " + order.getPrice());
     }
 
     public void returnBack() {
