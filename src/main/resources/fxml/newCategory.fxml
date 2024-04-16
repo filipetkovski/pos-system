@@ -22,9 +22,9 @@
             </Button>
             <TableView fx:id="categoryTable" editable="true" prefHeight="730.0" prefWidth="495.0">
                 <columns>
-                    <TableColumn fx:id="nameColumn" prefWidth="180.6051025390625" text="ИМЕ" />
-                    <TableColumn fx:id="supCatColumn" minWidth="0.0" prefWidth="177.3948974609375" text="НАДКАТЕГОРИЈА" />
-                    <TableColumn fx:id="visibleColumn" minWidth="0.0" prefWidth="132.4564208984375" text="ВИДЛИВОСТ" />
+                    <TableColumn fx:id="nameColumn" prefWidth="180.0" text="ИМЕ" />
+                    <TableColumn fx:id="supCatColumn" minWidth="0.0" prefWidth="162.0" text="НАДКАТЕГОРИЈА" />
+                    <TableColumn fx:id="visibleColumn" minWidth="0.0" prefWidth="150.0" text="ВИДЛИВОСТ" />
                 </columns>
             </TableView>
         </VBox>

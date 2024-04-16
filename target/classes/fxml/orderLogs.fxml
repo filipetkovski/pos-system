@@ -12,13 +12,13 @@
             <TableView fx:id="logTable" prefHeight="730.0" prefWidth="1873.0">
                 <columns>
                     <TableColumn fx:id="idColumn" prefWidth="75.46217346191406" text="КОД" />
-                    <TableColumn fx:id="employeeColumn" minWidth="0.0" prefWidth="184.0" text="ЌЕЛНЕР" />
-                    <TableColumn fx:id="productColumn" prefWidth="181.0" text="ПРОДУКТ" />
+                    <TableColumn fx:id="employeeColumn" minWidth="0.0" prefWidth="159.0" text="ЌЕЛНЕР" />
+                    <TableColumn fx:id="productColumn" prefWidth="206.0" text="ПРОДУКТ" />
                     <TableColumn fx:id="tableColumn" prefWidth="92.0" text="МАСА" />
                     <TableColumn fx:id="orderColumn" prefWidth="166.0" text="НАРАЧКА" />
                <TableColumn fx:id="quantityColumn" prefWidth="63.05426025390625" text="КЛ." />
-                    <TableColumn fx:id="statusColumn" prefWidth="230.0272216796875" text="СТАТУС" />
-                    <TableColumn fx:id="dateColumn" prefWidth="206.0" text="ДАТУМ" />
+                    <TableColumn fx:id="statusColumn" prefWidth="167.0" text="СТАТУС" />
+                    <TableColumn fx:id="dateColumn" prefWidth="270.0" text="ДАТУМ" />
                 </columns>
             </TableView>
         </VBox>
