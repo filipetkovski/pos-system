@@ -497,12 +497,17 @@ public class InsideTableController {
                     if (products.contains(addedProduct)) { //If the selected product is from the local list, remove it
                         products.remove(addedProduct);
                     } else {
-                        addedProductService.deleteAddedProduct(addedProduct); //If the selected product is from the database, delete it
-                        Order order = orderService.findByCode(table.getOrder().getCode());
-                        orderService.resetTotalPrice(order);
-                        table.setOrder(order);
-                        tableService.save(table);
-                        resetPrice();
+                        if(!employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+                            printMessage("Не сте овластени за бришење на постоечка нарачка!", false);
+                            break;
+                        } else {
+                            addedProductService.deleteAddedProduct(addedProduct); //If the selected product is from the database, delete it
+                            Order order = orderService.findByCode(table.getOrder().getCode());
+                            orderService.resetTotalPrice(order);
+                            table.setOrder(order);
+                            tableService.save(table);
+                            resetPrice();
+                        }
                     }
                     printMessage("Успешно избришан продукт!", true);
                     tableView.getItems().remove(finalSelectedIndex.intValue()); //Remove from the table view
