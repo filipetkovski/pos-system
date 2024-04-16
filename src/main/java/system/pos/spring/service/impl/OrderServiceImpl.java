@@ -84,7 +84,24 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(Status.ЗАТВОРЕНА);
         order.setPayment_method(pay);
         order.setNumber_people(number);
-        orderRepository.save(order);
+        save(order);
+    }
+
+    @Override
+    public void resetDiscount(Order order) {
+        order.setDiscount(0);
+        int totalPrice = order.getProducts().stream()
+                .mapToInt(product -> product.getQuantity() * product.getProduct().getPrice())
+                .sum();
+        order.setPrice(totalPrice);
+        save(order);
+    }
+
+    @Override
+    public void makeDiscount(Order order, Integer price, Integer percent) {
+        order.setPrice(price - (price * percent) / 100);
+        order.setDiscount(percent);
+        save(order);
     }
 
     @Override
@@ -108,6 +125,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void changeStatus(Order order, Status status) {
         order.setStatus(status);
-        orderRepository.save(order);
+        save(order);
     }
 }
