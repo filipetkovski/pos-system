@@ -1,11 +1,11 @@
 package system.pos.javafx.controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -14,7 +14,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.Status;
@@ -24,13 +23,13 @@ import system.pos.spring.service.AddedProductService;
 import system.pos.spring.service.OrderService;
 import system.pos.spring.service.ProductService;
 import system.pos.spring.service.TableService;
+import system.pos.spring.utility.CapitalizeFirstLetter;
+import system.pos.spring.utility.MessagePrinter;
 
 import java.io.ByteArrayInputStream;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InsideTableController {
@@ -62,6 +61,8 @@ public class InsideTableController {
     private Label codeLabel;
     @FXML
     private BorderPane border;
+    @FXML
+    private ScrollPane scrollPanelProducts;
     @FXML
     private TableView<AddedProduct> tableView;
     @FXML
@@ -114,7 +115,7 @@ public class InsideTableController {
 
             border.setOnKeyPressed(this::handleKeyPressed);
             openTableButton.setVisible(!hasOrder()); //Disable the button ones it's clicked and the table is open
-            closeTableButton.setVisible(hasOrder() && isValidEmployee()); //Visible to those who have opened the tables
+            closeTableButton.setVisible(hasOrder() && employee.getE_role().equals(UserRole.МЕНАЏЕР)); //Visible to those who have opened the tables
             searchHBox.setVisible(hasOrder() && isValidEmployee());
             payButton.setVisible(hasOrder() && isValidEmployee());
             holdButton.setVisible(hasOrder() && isValidEmployee());
@@ -129,8 +130,18 @@ public class InsideTableController {
     }
 
     private void handleKeyPressed(KeyEvent keyEvent) {
-        if (keyEvent.getCode() == KeyCode.BACK_SPACE) {
+        if (keyEvent.getCode() == KeyCode.SHIFT && !products.isEmpty()) {
+            saveToOrder();
+        } else if (keyEvent.getCode() == KeyCode.BACK_SPACE && !searchInput.getText().isEmpty()) {
             searchInput.setText(searchInput.getText().substring(0, searchInput.getText().length() - 1));
+        } else if(keyEvent.getCode() == KeyCode.DIGIT1) {
+            showMenu(productService.getTopCategories());
+        } else if(keyEvent.getCode() == KeyCode.F1) {
+            pay();
+        } else if(keyEvent.getCode() == KeyCode.F2) {
+            holdOrder();
+        } else if(keyEvent.getCode() == KeyCode.F3 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+            closeTable();
         } else if(keyEvent.getCode() != KeyCode.ENTER) {
             searchInput.setText(searchInput.getText() + keyEvent.getText());
             searchButton.setDefaultButton(true);
@@ -162,16 +173,16 @@ public class InsideTableController {
     }
 
     public void print() {
-        tableNumber.setText("Маса: " + table.getNumber() + " - " + table.getRegion().toString().toLowerCase());
+        tableNumber.setText("Маса: " + table.getNumber() + " - " + CapitalizeFirstLetter.capitalizeFirstLetter(table.getRegion().toString()));
         if(table.getOrder() == null) {
-            employeeName.setText(employee.getName());
+            employeeName.setText("Ќелнер: " + CapitalizeFirstLetter.capitalizeFirstLetter(employee.getName()));
         } else {
             Order order = table.getOrder();
             Employee tableEmployee = table.getOrder().getEmployee();
 
             employeeName.setText("Ќелнер: " + tableEmployee.getName());
             codeLabel.setText("Код: " + order.getCode().toString());
-            dateLabel.setText("Време: " + order.getCreatedOn().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+            dateLabel.setText("Време: " + order.getCreatedOn().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
 
             resetPrice();
             showMenu(productService.getTopCategories());
@@ -187,11 +198,11 @@ public class InsideTableController {
     }
 
     public void closeTable() {  //This method will be called when the closeTableButton is clicked, and it will open the authentication fxml
-        authenticationController.initData(this);
+        authenticationController.initData(this,table);
         listener.changeScene("/fxml/authentication.fxml");
     }
 
-    public void cancelOrder() { //Canceling order, removing from the table and setting the Status to OTKAZANA
+    public void cancelOrder() { //Canceling order, removing from the table and setting the Status to ОТКАЖАНА
         orderService.changeStatus(table.getOrder(), Status.ОТКАЖАНА);
         tableService.reset(table);
 
@@ -218,33 +229,99 @@ public class InsideTableController {
             Button backButton = new Button("Назад"); // Add a back button to navigate back to the previous categories
             backButton.setId("backButton");
             backButton.setOnAction(event -> showMenu(productService.getTopCategories()));
-
             categoryContainer.getChildren().add(backButton);
 
             categories.forEach(cat -> showProducts(cat.getProducts()));
         }
     }
 
-    private void showProducts(List<Product> productList) { //Render product buttons as images
-        listProducts.getChildren().clear(); //Clear before rendering
+    private void showProducts(List<Product> productList) {
+        listProducts.getChildren().clear(); // Clear before rendering
 
-        productList.stream().filter(Product::isVisible) // Creating box for the product image and name
+        List<Node> focusableNodes = productList.stream().filter(Product::isVisible)
                 .map(product -> {
                     VBox productBox = new VBox();
-                    productBox.setId("showVBox");
+                    productBox.setId("productBox");
+                    productBox.setFocusTraversable(true); // Make the VBox focusable
 
-                    Label productName = new Label(product.getName());
-                    productName.setId("showName");
+                    Label productName = new Label(CapitalizeFirstLetter.capitalizeFirstLetter(product.getName()));
+                    productName.setId("productName");
 
                     ImageView productImage = createImage(product);
                     productBox.getChildren().addAll(productImage, productName);
+                    productBox.setStyle("-fx-border-color: transparent; -fx-border-width: 2; -fx-spacing: 2px;");
+                    productBox.setUserData(product);
+
+                    productBox.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+                        productBox.setStyle(isNowFocused ? "-fx-border-color: #f62b2b; -fx-border-width: 2; -fx-spacing: 2px;" : "-fx-border-color: transparent; -fx-border-width: 2; -fx-spacing: 2px;");
+                    });
 
                     return productBox;
-            }) .forEach(listProducts.getChildren()::add); // Add the VBox to the listProducts container
+                })
+                .collect(Collectors.toList());
+
+        listProducts.getChildren().addAll(focusableNodes); // Add all focusable nodes to the listProducts container
+
+        if (!focusableNodes.isEmpty()) // Set initial focus to the first focusable node
+            focusableNodes.get(0).requestFocus();
+
+        listProducts.setOnKeyPressed(event -> { // Set a key event handler for the entire listProducts container
+            if (event.getCode() == KeyCode.TAB) {
+                Node currentNode = listProducts.getScene().getFocusOwner();
+                if (currentNode != null) {
+                    int currentIndex = focusableNodes.indexOf(currentNode);
+                    if (currentIndex != -1) {
+                        int nextIndex = event.isShiftDown() ?
+                                (currentIndex - 1 + focusableNodes.size()) % focusableNodes.size() :
+                                (currentIndex + 1) % focusableNodes.size();
+                        focusableNodes.get(nextIndex).requestFocus();
+                        scrollProductIntoView(focusableNodes.get(nextIndex)); // Scroll the focused product into view
+                        event.consume(); // Consume the event so it doesn't propagate further
+                    }
+                }
+            } else if (event.getCode() == KeyCode.BACK_QUOTE) {
+                Node currentNode = listProducts.getScene().getFocusOwner();
+                if (currentNode != null) {
+                    int currentIndex = focusableNodes.indexOf(currentNode);
+                    if (currentIndex != -1) {
+                        int previousIndex = (currentIndex - 1 + focusableNodes.size()) % focusableNodes.size();
+                        focusableNodes.get(previousIndex).requestFocus();
+                        scrollProductIntoView(focusableNodes.get(previousIndex)); // Scroll the focused product into view
+                        event.consume(); // Consume the event so it doesn't propagate further
+                    }
+                }
+            } else if(event.getCode() == KeyCode.SPACE) {
+                Node focusedNode = listProducts.getScene().getFocusOwner();
+                if (focusableNodes.contains(focusedNode)) {
+                    Product focusedProduct = (Product) focusedNode.getUserData();
+                    if (focusedProduct != null) {
+                        handleItemClick(focusedProduct); // Call the method with the focused product
+                    }
+                }
+                event.consume();
+            }
+        });
+    }
+
+    private void scrollProductIntoView(Node productNode) {
+        Bounds bounds = productNode.getBoundsInParent(); // Calculate the bounds of the product node relative to the scroll pane
+        double minY = bounds.getMinY();
+        double maxY = bounds.getMaxY();
+
+        double viewportHeight = scrollPanelProducts.getViewportBounds().getHeight(); // Get the height of the viewport of the scroll pane
+        double scrollY = scrollPanelProducts.getVvalue() * (listProducts.getHeight() - viewportHeight); // Calculate the current visible range in the scroll pane
+
+        double scrollBottom = scrollY + viewportHeight;
+        double nodeHeight = maxY - minY; // Calculate the height of the product node
+
+        if (minY < scrollY) // Check if the product node is above the visible area
+            scrollPanelProducts.setVvalue((minY - nodeHeight) / (listProducts.getHeight() - viewportHeight));
+        else if (maxY > scrollBottom) // Check if the product node is below the visible area
+            scrollPanelProducts.setVvalue((maxY - viewportHeight + nodeHeight) / (listProducts.getHeight() - viewportHeight));
     }
 
     public Button createCategoryButton(Category category) { //Creating category labels
-        Button categoryButton = new Button(category.getName());
+        Button categoryButton = new Button(CapitalizeFirstLetter.capitalizeFirstLetter(category.getName()));
         categoryButton.setId("categoryLabel");
         categoryButton.setOnMouseClicked(event -> showCategories(category));
         return categoryButton;
@@ -253,8 +330,8 @@ public class InsideTableController {
     private ImageView createImage(Product product) {
         ImageView productImage = new ImageView();
 
-        productImage.setFitWidth(160);
-        productImage.setFitHeight(160);
+        productImage.setFitWidth(165);
+        productImage.setFitHeight(165);
         productImage.setId(product.getCode().toString());
         productImage.setOnMouseClicked(event -> handleItemClick(product));
         productImage.setImage(product.getImage() != null ? new Image(new ByteArrayInputStream(product.getImage())) : null);
@@ -267,12 +344,11 @@ public class InsideTableController {
         if(text.isBlank()) {
             printMessage("Не внесовте ништо!",false);
         } else {
-            List<Product> productList = productService.findBySerach(text.toLowerCase());
-            if(!productList.isEmpty()) {
+            List<Product> productList = productService.findBySearch(text.toLowerCase());
+            if(!productList.isEmpty())
                 showProducts(productList);
-            } else {
-                printMessage("Нема продукт со тоа име!",false);
-            }
+            else
+                printMessage("Нема продукт/и со тоа име!",false);
         }
         searchInput.clear();
     }
@@ -362,6 +438,7 @@ public class InsideTableController {
         resetPrice();
         renderInTable();
         isSubmitVisible();
+        printMessage("Успешно извршена нарачка.", true);
     }
 
     public void pay() { //Activate when payButton is clicked
@@ -420,12 +497,17 @@ public class InsideTableController {
                     if (products.contains(addedProduct)) { //If the selected product is from the local list, remove it
                         products.remove(addedProduct);
                     } else {
-                        addedProductService.deleteAddedProduct(addedProduct); //If the selected product is from the database, delete it
-                        Order order = orderService.findByCode(table.getOrder().getCode());
-                        orderService.resetTotalPrice(order);
-                        table.setOrder(order);
-                        tableService.save(table);
-                        resetPrice();
+                        if(!employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+                            printMessage("Не сте овластени за бришење на постоечка нарачка!", false);
+                            break;
+                        } else {
+                            addedProductService.deleteAddedProduct(addedProduct); //If the selected product is from the database, delete it
+                            Order order = orderService.findByCode(table.getOrder().getCode());
+                            orderService.resetTotalPrice(order);
+                            table.setOrder(order);
+                            tableService.save(table);
+                            resetPrice();
+                        }
                     }
                     printMessage("Успешно избришан продукт!", true);
                     tableView.getItems().remove(finalSelectedIndex.intValue()); //Remove from the table view
@@ -442,8 +524,8 @@ public class InsideTableController {
             quantityColumn.setOnEditCommit(event -> {
                 AddedProduct addedProduct = event.getTableView().getItems().get(event.getTablePosition().getRow());
 
-                products.stream() //Compare the selected product with the local list
-                        .filter(product -> product.getProduct().equals(addedProduct.getProduct()))
+                //Compare the selected product with the local list
+                products.stream().filter(product -> product.getProduct().equals(addedProduct.getProduct()))
                         .findFirst()
                         .ifPresent(existingProduct -> {
                             try {
@@ -460,7 +542,8 @@ public class InsideTableController {
                             }
                         });
 
-                table.getOrder().getProducts().stream() //Compare the selected product with the products in the database
+                //Compare the selected product with the products in the database
+                table.getOrder().getProducts().stream()
                         .filter(product -> product.getProduct().equals(addedProduct.getProduct()))
                         .findFirst()
                         .ifPresent(existingProduct -> printMessage("Не смеете да правите промена на внесени нарачки!", false));
@@ -498,40 +581,19 @@ public class InsideTableController {
         products.clear(); //Reset the local list
         listener.changeScene("/fxml/homePage.fxml");
     }
-
     public void reload() { //Reload the page after changes
         listener.changeScene("/fxml/insideTable.fxml");
     }
-
     public boolean hasOrder() { //Check if the table has an order inside
         return table.getOrder() != null;
     }
-
-    public boolean isValidEmployee() {
-        return table.getOrder().getEmployee().getName().equals(employee.getName()) || employee.getE_role().equals(UserRole.МЕНАЏЕР);
-    }
-
+    public boolean isValidEmployee() { return table.getOrder().getEmployee().getName().equals(employee.getName()) || employee.getE_role().equals(UserRole.МЕНАЏЕР); }
     public void isSubmitVisible() { //If products != null, The submit button will be visible
         submitProducts.setVisible(!products.isEmpty());
         deleteOrderButton.setVisible(table.getOrder() != null && ((!table.getOrder().getProducts().isEmpty() || !products.isEmpty()) && isValidEmployee()));
     }
-
     public void resetPrice() {
         totalPrice.setText(table.getOrder().getPrice() + "ден");
     }
-
-    public void printMessage(String message, Boolean color) {
-        messageLabel.setTextFill(color ? Color.web("#27ae60") : Color.web("#f62b2b"));
-        messageLabel.setText(message);
-
-        Platform.runLater(() -> {
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                messageLabel.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
-    }
-
+    public void printMessage(String message, Boolean color) { MessagePrinter.printMessage(messageLabel, message, color); }
 }

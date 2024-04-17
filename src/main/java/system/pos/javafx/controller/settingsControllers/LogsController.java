@@ -12,7 +12,6 @@ import system.pos.spring.service.LogsService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Component
 public class LogsController {
@@ -32,6 +31,8 @@ public class LogsController {
     private TableColumn<Log, String> productColumn;
     @FXML
     private TableColumn<Log, Long> orderColumn;
+    @FXML
+    private TableColumn<Log, Integer> quantityColumn;
     @FXML
     private TableColumn<Log, Integer> tableColumn;
     @FXML
@@ -54,6 +55,7 @@ public class LogsController {
         productColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().toUpperCase()));
         orderColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getOrder_code()).asObject());
         tableColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getTable_number()).asObject());
+        quantityColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity()).asObject());
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().toUpperCase()));
         dateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreated_on()));
 
@@ -62,21 +64,14 @@ public class LogsController {
             @Override
             protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(formatter.format(item));
-                }
+                setText(empty || item == null ? null : formatter.format(item));
             }
         });
     }
 
     public void printOrderLogs() {
-        List<Log> logs = logService.findAll();
-
         logTable.getItems().clear();
-
-        logs.forEach(log -> logTable.getItems().add(log));
+        logService.findAll().forEach(log -> logTable.getItems().add(log));
     }
 
 }

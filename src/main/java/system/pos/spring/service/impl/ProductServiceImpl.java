@@ -1,7 +1,6 @@
 package system.pos.spring.service.impl;
 
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import system.pos.spring.enumm.ProductType;
 import system.pos.spring.model.Category;
@@ -43,8 +42,52 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findBySerach(String serachText) {
-        return productRepository.findAll().stream().filter(product -> product.getName().toLowerCase().contains(serachText) || product.getCategory().getName().toLowerCase().contains(serachText)).collect(Collectors.toList());
+    public List<Product> findBySearch(String searchText) {
+        String toLowerCaseText = searchText.toLowerCase();
+        List<Product> products = productRepository.findAll().stream()
+                .filter(product -> product.getName().toLowerCase().contains(searchText) ||
+                        product.getCategory().getName().toLowerCase().contains(searchText) ||
+                        product.getCategory().getSupercategory().getName().toLowerCase().contains(searchText))
+                .collect(Collectors.toList());
+
+        return products.isEmpty() ? productRepository.findAll().stream()
+                .filter(product -> isSimilar(product.getName().toLowerCase(), toLowerCaseText) ||
+                        isSimilar(product.getCategory().getName().toLowerCase(), toLowerCaseText) ||
+                        isSimilar(product.getCategory().getSupercategory().getName().toLowerCase(), toLowerCaseText))
+                .collect(Collectors.toList()) : products;
+    }
+
+    private boolean isSimilar(String text, String searchText) {
+        return calculateLevenshteinDistance(text, searchText) <= 1;
+    }
+
+    private int calculateLevenshteinDistance(String s1, String s2) {
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+
+        for (int i = 0; i <= s1.length(); i++) {
+            for (int j = 0; j <= s2.length(); j++) {
+                if (i == 0) {
+                    dp[i][j] = j;
+                } else if (j == 0) {
+                    dp[i][j] = i;
+                } else {
+                    dp[i][j] = min(dp[i - 1][j - 1] + costOfSubstitution(s1.charAt(i - 1), s2.charAt(j - 1)),
+                            dp[i - 1][j] + 1,
+                            dp[i][j - 1] + 1);
+                }
+            }
+        }
+
+        return dp[s1.length()][s2.length()];
+    }
+
+    private int costOfSubstitution(char a, char b) {
+        return a == b ? 0 : 1;
+    }
+
+    private int min(int... numbers) {
+        return java.util.Arrays.stream(numbers)
+                .min().orElse(Integer.MAX_VALUE);
     }
 
     @Override

@@ -8,6 +8,7 @@ import system.pos.javafx.stage.StageListener;
 import system.pos.spring.model.Employee;
 import system.pos.spring.model.Tables;
 import system.pos.spring.service.TableService;
+import system.pos.spring.utility.CapitalizeFirstLetter;
 
 import java.util.List;
 
@@ -35,22 +36,22 @@ public class HomePageController {
     }
 
     public void createTableButtons(List<Tables> tables) {
-        for (Tables table : tables) {
+        tables.forEach(table -> {
             Button button = new Button(table.getNumber().toString());
             button.setId(table.getNumber().toString());
             if(table.getOrder() != null) { //Color green to those table-buttons that have order inside
                 button.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;");
                 button.setText(table.getNumber() + "\n"
-                        + table.getOrder().getEmployee().getName());
+                        + CapitalizeFirstLetter.capitalizeFirstLetter(table.getOrder().getEmployee().getName()));
             }
             button.setOnAction(event -> clickTable(table)); //Activate the method by clicking on a table button
             flowPane.getChildren().add(button);
-        }
+        });
     }
 
     private void clickTable(Tables table) { //Open authentication, authenticate, so you can open the table
         openTable = table;
-        authenticationController.initData(this);
+        authenticationController.initData(this,openTable);
         stageListener.changeScene("/fxml/authentication.fxml");
     }
 

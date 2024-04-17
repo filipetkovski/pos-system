@@ -37,4 +37,5 @@ public class Order {
     Employee employee;
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     List<AddedProduct> products;
+    Integer discount;
 }

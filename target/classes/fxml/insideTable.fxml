@@ -17,8 +17,12 @@
 <BorderPane fx:id="border" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1024.0" prefWidth="1920.0" stylesheets="/css/insideTable.css, /css/table.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="system.pos.javafx.controller.InsideTableController">
    <left>
       <AnchorPane prefHeight="946.0" prefWidth="979.0" BorderPane.alignment="CENTER">
-         <VBox fx:id="categoryContainer" layoutX="25.0" layoutY="89.0" prefHeight="752.0" prefWidth="165.0" />
-         <ScrollPane layoutX="237.0" layoutY="89.0" prefHeight="724.0" prefWidth="722.0">
+         <ScrollPane layoutX="25.0" layoutY="89.0" prefHeight="724.0" prefWidth="188.0">
+            <content>
+               <VBox fx:id="categoryContainer" prefHeight="186.0" prefWidth="165.0" />
+            </content>
+         </ScrollPane>
+         <ScrollPane fx:id="scrollPanelProducts" layoutX="237.0" layoutY="89.0" prefHeight="724.0" prefWidth="740.0">
             <content>
                <FlowPane fx:id="listProducts" prefHeight="184.0" prefWidth="722.0" />
             </content>
@@ -29,7 +33,7 @@
                   <Font size="25.0" />
                </font>
             </TextField>
-            <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchProduct" prefHeight="46.0" prefWidth="165.0" text="Пребарај">
+            <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchProduct" prefHeight="46.0" prefWidth="165.0" style="-fx-background-color: #3498db;" text="Пребарај" textFill="WHITE">
                <font>
                   <Font size="25.0" />
                </font>
@@ -57,7 +61,7 @@
                      <Font size="25.0" />
                   </font>
                </Button>
-               <Button fx:id="openTableButton" mnemonicParsing="false" onAction="#openTable" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="OPEN TABLE" textFill="#030303" visible="#hasOrder">
+               <Button fx:id="openTableButton" mnemonicParsing="false" onAction="#openTable" prefHeight="50.0" prefWidth="230.0" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="ОТВОРИ" textFill="#030303" visible="#hasOrder">
                   <font>
                      <Font size="25.0" />
                   </font>
@@ -71,12 +75,12 @@
          <TableView fx:id="tableView" editable="true" layoutX="32.0" layoutY="89.0" prefHeight="719.0" prefWidth="560.0">
             <columns>
                <TableColumn fx:id="productColumn" prefWidth="210.175537109375" text="ПРОИЗВОД" />
-               <TableColumn fx:id="quantityColumn" prefWidth="94.0" text="КОЛИЧИНА" />
-               <TableColumn fx:id="descriptionColumn" prefWidth="252.0" text="ОПИС" />
+               <TableColumn fx:id="quantityColumn" prefWidth="107.4375" text="КОЛИЧИНА" />
+               <TableColumn fx:id="descriptionColumn" prefWidth="238.5625" text="ОПИС" />
             </columns>
          </TableView>
          <HBox layoutX="32.0" layoutY="20.0" prefHeight="53.0" prefWidth="563.0" style="-fx-spacing: 10px;">
-            <Button fx:id="deleteOrderButton" mnemonicParsing="false" onAction="#deleteOrderTable" prefHeight="50.0" prefWidth="180.0" text="Избриши" textFill="#030303">
+            <Button fx:id="deleteOrderButton" mnemonicParsing="false" onAction="#deleteOrderTable" prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: #f62b2b;" text="Избриши" textFill="WHITE">
                <font>
                   <Font size="25.0" />
                </font>
@@ -113,16 +117,15 @@
                </font>
             </Label>
          </VBox>
-         <VBox alignment="TOP_CENTER" layoutX="36.0" layoutY="212.0" prefHeight="358.0" prefWidth="244.0" style="-fx-spacing: 10px;">
-            <Label text="Вкупно">
+         <VBox alignment="TOP_CENTER" layoutX="36.0" layoutY="212.0" prefHeight="364.0" prefWidth="244.0" style="-fx-spacing: 10px;">
+            <Label prefHeight="43.0" prefWidth="304.0" text="Вкупно:">
                <font>
-                  <Font size="35.0" />
+                  <Font size="30.0" />
                </font>
             </Label>
-            <Line endX="175.142333984375" startX="-56.587646484375" />
-            <Label fx:id="totalPrice" contentDisplay="CENTER" prefHeight="50.0" prefWidth="251.0" style="-fx-alignment: center;" text="0ден" textFill="#f62b2b">
+            <Label fx:id="totalPrice" alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="244.0" style="-fx-background-color: #27ae60; -fx-border-radius: 5px; -fx-background-radius: 5px;" text="0ден" textFill="WHITE">
                <font>
-                  <Font size="40.0" />
+                  <Font size="35.0" />
                </font>
             </Label>
             <Label />
@@ -132,12 +135,12 @@
                   <Font size="30.0" />
                </font>
             </Button>
-            <Button fx:id="closeTableButton" mnemonicParsing="false" onAction="#closeTable" prefHeight="57.0" prefWidth="240.0" style="-fx-background-color: #f62b2b; -fx-text-fill: white;" text="ЗАТВОРИ" textFill="#030303" visible="#hasOrder">
+            <Button fx:id="holdButton" mnemonicParsing="false" onAction="#holdOrder" prefHeight="50.0" prefWidth="240.0" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="ЧЕКАЊЕ" textFill="#030303">
                <font>
                   <Font size="30.0" />
                </font>
             </Button>
-            <Button fx:id="holdButton" mnemonicParsing="false" onAction="#holdOrder" prefHeight="50.0" prefWidth="240.0" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="ЧЕКАЊЕ" textFill="#030303">
+            <Button fx:id="closeTableButton" mnemonicParsing="false" onAction="#closeTable" prefHeight="57.0" prefWidth="240.0" style="-fx-background-color: #f62b2b; -fx-text-fill: white;" text="ЗАТВОРИ" textFill="#030303" visible="#hasOrder">
                <font>
                   <Font size="30.0" />
                </font>

@@ -13,7 +13,6 @@ import system.pos.spring.service.AuthLogsService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Component
 public class AuthLogsController {
@@ -54,11 +53,7 @@ public class AuthLogsController {
             @Override
             protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(formatter.format(item));
-                }
+                setText(empty || item == null ? null : formatter.format(item));
             }
         });
     }

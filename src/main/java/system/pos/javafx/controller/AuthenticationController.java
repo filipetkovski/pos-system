@@ -1,19 +1,16 @@
 package system.pos.javafx.controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.EmployeeStatus;
 import system.pos.spring.enumm.SideBar;
 import system.pos.spring.enumm.UserRole;
 import system.pos.spring.model.Employee;
+import system.pos.spring.model.Tables;
 import system.pos.spring.service.EmployeeService;
+import system.pos.spring.utility.MessagePrinter;
 
 
 @Component
@@ -29,6 +26,7 @@ public class AuthenticationController {
     }
 
     private Employee employee;
+    private Tables openTable;
 
     @FXML
     private Button loginButton;
@@ -46,38 +44,52 @@ public class AuthenticationController {
         backButton.setCancelButton(true);
     }
 
-    public void initData(Object callingController) {
+    public void initData(Object callingController, Tables openTable) {
         this.callingController = callingController;
+        this.openTable = openTable;
     }
 
     //Login algorithm
     public void userLogin() {
-        if(!codeLabel.getText().isEmpty()) {
+        String code = codeLabel.getText();
+        if(code.isEmpty()) {
+            printMessage("Внесето го вашиот код.", false);
+        } else {
             try {
-                employee = employeeService.checkLogin(Long.parseLong(codeLabel.getText()));
+                employee = employeeService.checkLogin(Long.parseLong(code));
             } catch (NumberFormatException e) {
                 printMessage("Невалидна операција! Внесете број.", false);
             }
-            if(employee != null) {
+
+            if(employee == null) {
+                printMessage("Невалиден код.", false);
+            } else {
                 if(callingController instanceof SidebarController) {
                     if(((SidebarController) callingController).getSideBar().equals(SideBar.SETTINGS) && !employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
                         printMessage("Не сте овластени!", false);
                     } else {
                         returnAuthToken();
                     }
-                } else {
-                    if(employee.getStatus().equals(EmployeeStatus.НЕАКТИВЕН)) {
-                        printMessage("Не сте на смена.", false);
+                } if(callingController instanceof InsideTableController) {
+                    if(!employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+                        printMessage("Не сте овластени!", false);
                     } else {
                         returnAuthToken();
                     }
+                } else if(openTable != null) {
+                    if(employee.getStatus().equals(EmployeeStatus.НЕАКТИВЕН) && !employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+                        printMessage("Не сте на смена.", false);
+                    } else {
+                        if(openTable.getOrder() != null && !openTable.getOrder().getEmployee().getName().equals(employee.getName()) && !employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+                            printMessage("Ќелнер: " + openTable.getOrder().getEmployee().getName(), false);
+                        } else {
+                            returnAuthToken();
+                        }
+                    }
                 }
-            } else {
-                printMessage("Невалиден код.", false);
             }
-        } else {
-            printMessage("Внесето го вашиот код.", false);
         }
+
         codeLabel.clear();
     }
 
@@ -102,20 +114,6 @@ public class AuthenticationController {
     }
 
     public void printMessage(String message, Boolean color) {
-        Platform.runLater(() -> {
-            if(color) {
-                loginMessage.setTextFill(Color.web("#27ae60"));
-            } else {
-                loginMessage.setTextFill(Color.web("#f62b2b"));
-            }
-            loginMessage.setText(message);
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                loginMessage.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
+        MessagePrinter.printMessage(loginMessage, message, color);
     }
 }

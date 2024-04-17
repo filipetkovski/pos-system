@@ -15,7 +15,7 @@ public interface ProductService {
 
     List<Product> findAll();
 
-    List<Product> findBySerach(String serachText);
+    List<Product> findBySearch(String searchText);
 
     List<Category> getSecondLevelCategories();
 

@@ -1,15 +1,12 @@
 package system.pos.javafx.controller.settingsControllers;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.springframework.stereotype.Component;
 import system.pos.spring.enumm.Status;
 import system.pos.spring.enumm.TableRegion;
@@ -17,6 +14,8 @@ import system.pos.spring.model.Order;
 import system.pos.spring.model.Tables;
 import system.pos.spring.service.OrderService;
 import system.pos.spring.service.TableService;
+import system.pos.spring.utility.ChoiceBoxTableCellFactory;
+import system.pos.spring.utility.MessagePrinter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +38,6 @@ public class TableFormController {
     private RadioButton vnatreRadio;
     @FXML
     private RadioButton terasaRadio;
-    @FXML
-    private RadioButton shankRadio;
     @FXML
     private TextField numberInput;
     @FXML
@@ -137,10 +134,11 @@ public class TableFormController {
                 for (Integer finalSelectedIndex : finalSelectedIndices) {
                     selectionModel.clearSelection(finalSelectedIndex);
                     Tables tables = tableTable.getItems().get(finalSelectedIndex);
+
                     Order order = tables.getOrder();
-                    if(order != null) {
+                    if(order != null)
                         orderService.changeStatus(order, Status.ОТКАЖАНА);
-                    }
+
                     tableService.delete(tables); //If the selected table is from the database, delete it
                     tableTable.getItems().remove(finalSelectedIndex.intValue()); //Remove from the table view
                 }
@@ -148,61 +146,8 @@ public class TableFormController {
         });
     }
     public void editTable() {
-        regionColumn.setCellFactory(column -> {
-            TableCell<Tables, String> cell = new TableCell<>() {
-                private final ChoiceBox<String> choiceBox = new ChoiceBox<>();
-
-                {
-                    choiceBox.getItems().addAll(Arrays.stream(TableRegion.values()).map(Enum::name).toList()); // Assuming getSecondLevelCategories() returns a List<String> of categories
-                    choiceBox.setOnAction(event -> {
-                        if (isEditing()) {
-                            commitEdit(choiceBox.getValue());
-                        }
-                    });
-                }
-
-                @Override
-                public void startEdit() {
-                    super.startEdit();
-                    setText(null);
-                    setGraphic(choiceBox);
-
-                    getTableView().edit(getIndex(), getTableColumn());
-
-
-                    // Use Platform.runLater() to ensure proper initialization
-                    Platform.runLater(() -> {
-                        choiceBox.show();
-                        choiceBox.requestFocus();
-                    });
-                }
-
-                @Override
-                public void cancelEdit() {
-                    super.cancelEdit();
-                    setText(getItem());
-                    setGraphic(null);
-                }
-
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        if (isEditing()) {
-                            setGraphic(choiceBox);
-                            setText(null);
-                        } else {
-                            setText(item);
-                            setGraphic(null);
-                        }
-                    }
-                }
-            };
-            return cell;
-        });
+        regionColumn.setCellFactory(column -> ChoiceBoxTableCellFactory
+                .createCellFactory(new ChoiceBox<>(FXCollections.observableList(Arrays.stream(TableRegion.values()).map(Enum::name).toList()))));
 
         regionColumn.setOnEditCommit(event -> {
             Tables tables = event.getRowValue();
@@ -225,35 +170,17 @@ public class TableFormController {
 
         if (selectedToggle == null)
             return null;
-
-        if (selectedToggle.equals(nadvorRadio)) {
+        else if (selectedToggle.equals(nadvorRadio))
             return TableRegion.НАДВОР;
-        } else if (selectedToggle.equals(vnatreRadio)) {
+        else if (selectedToggle.equals(vnatreRadio))
             return TableRegion.ВНАТРЕ;
-        } else if(selectedToggle.equals(terasaRadio)) {
+        else if(selectedToggle.equals(terasaRadio))
             return TableRegion.ТЕРАСА;
-        } else if(selectedToggle.equals(shankRadio)) {
+        else
             return TableRegion.ШАНК;
-        }
-
-        return null;
     }
 
     public void printMessage(String message, Boolean color) {
-        Platform.runLater(() -> {
-            if(color) {
-                messageLabel.setTextFill(Color.web("#27ae60"));
-            } else {
-                messageLabel.setTextFill(Color.web("#f62b2b"));
-            }
-            messageLabel.setText(message);
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                messageLabel.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
+        MessagePrinter.printMessage(messageLabel, message, color);
     }
 }

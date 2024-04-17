@@ -1,14 +1,13 @@
 package system.pos.javafx.controller;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import org.springframework.stereotype.Component;
-import system.pos.javafx.controller.settingsControllers.OrderHistory;
+import system.pos.javafx.controller.settingsControllers.OrderHistoryController;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.Payment;
 import system.pos.spring.enumm.UserRole;
@@ -16,6 +15,7 @@ import system.pos.spring.model.Employee;
 import system.pos.spring.model.Order;
 import system.pos.spring.service.OrderService;
 import system.pos.spring.service.TableService;
+import system.pos.spring.utility.MessagePrinter;
 
 @Component
 public class PaymentController {
@@ -31,6 +31,8 @@ public class PaymentController {
     }
 
     @FXML
+    private BorderPane border;
+    @FXML
     private ToggleGroup toggleGroup;
     @FXML
     private Label messageLabel;
@@ -40,6 +42,8 @@ public class PaymentController {
     private RadioButton cashRadio;
     @FXML
     private RadioButton cardRadio;
+    @FXML
+    private RadioButton invoiceRadio;
     @FXML
     private Button submitButton;
     @FXML
@@ -52,6 +56,8 @@ public class PaymentController {
     private TextField discountField;
     @FXML
     private Button discountButton;
+    @FXML
+    private Button resetButton;
     @FXML
     private Button backButton;
     @FXML
@@ -66,6 +72,8 @@ public class PaymentController {
     public void initialize() {
         backButton.setCancelButton(true);
         submitButton.setDefaultButton(true);
+        border.setOnKeyPressed(this::handleKeyPressed);
+        Platform.runLater(numberLabel::requestFocus);
 
         renderData();
     }
@@ -76,46 +84,75 @@ public class PaymentController {
         this.employee = employee;
     }
 
+    private void handleKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.F1) {
+            cashRadio.setSelected(true);
+        } else if (keyEvent.getCode() == KeyCode.F2) {
+            cardRadio.setSelected(true);
+        } else if (keyEvent.getCode() == KeyCode.F3) {
+            invoiceRadio.setSelected(true);
+        } else if(keyEvent.getCode() == KeyCode.F4) {
+            numberLabel.requestFocus();
+        } else if(keyEvent.getCode() == KeyCode.F5) {
+            receiveField.requestFocus();
+        } else if(keyEvent.getCode() == KeyCode.F6 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+            discountField.requestFocus();
+        } else if(keyEvent.getCode() == KeyCode.F7 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+            makeDiscount();
+        } else if(keyEvent.getCode() == KeyCode.F8 && employee.getE_role().equals(UserRole.МЕНАЏЕР)) {
+            resetDiscount();
+        } else if(keyEvent.getCode() == KeyCode.F9) {
+            //PRINT PAYCHECK
+        }
+    }
+
     public void renderData() {
+        UserRole role = employee.getE_role();
+
         codeLabel.setText(order.getCode().toString());
         nmTableLabel.setText("Маса: " + order.getTable_number());
         priceLabel.setText("Вкупно: " + order.getPrice());
-
-        UserRole role = employee.getE_role();
         discountField.setVisible(role.equals(UserRole.МЕНАЏЕР));
         discountButton.setVisible(role.equals(UserRole.МЕНАЏЕР));
+        resetButton.setVisible(role.equals(UserRole.МЕНАЏЕР));
     }
 
     public void calculateChange() {
         String receive = receiveField.getText();
-        if(!receive.isBlank()) {
+        if(receive.isBlank()) {
+            changeLabel.setText("Кусур: 0ден");
+        } else {
             try {
                 changeLabel.setText("Кусур: " + (Integer.parseInt(receive) - (order.getPrice()) + "ден"));
             } catch (NumberFormatException e) {
                 printMessage("Невалидна операција! Внеси број.", false);
             }
-        } else {
-            changeLabel.setText("Кусур: 0ден");
         }
     }
 
     public void finishPayment() {
         Payment pay = getSelectedRadioButton();
-        if(pay != null && !numberLabel.getText().isBlank()) {
+        String numberOfPeople = numberLabel.getText();
 
-            String numberOfPeople = numberLabel.getText();
+        if(pay != null && !numberOfPeople.isBlank()) {
+            int numOfPeople;
             try {
-                orderService.payOrder(order, pay, Integer.parseInt(numberOfPeople));
+                numOfPeople = Integer.parseInt(numberOfPeople);
             } catch (NumberFormatException e) {
                 printMessage("Невалидна операција! Внеси број.", false);
                 return;
             }
 
-            tableService.reset(tableService.findByNumber(order.getTable_number().longValue()));
-            if (callingController instanceof InsideTableController) {
-                stageListener.changeScene("/fxml/homePage.fxml");
+            if(numOfPeople < 1) {
+                printMessage("Внеси позитивен број на особи!",false);
             } else {
-                returnBack();
+                orderService.payOrder(order, pay, Integer.parseInt(numberOfPeople));
+                tableService.reset(tableService.findByNumber(order.getTable_number().longValue()));
+
+                if (callingController instanceof InsideTableController)
+                    stageListener.changeScene("/fxml/homePage.fxml");
+                else
+                    returnBack();
             }
         } else {
             printMessage("Внеси ги сите податоци!", false);
@@ -124,24 +161,46 @@ public class PaymentController {
 
     public void makeDiscount() {
         String percentDiscount = discountField.getText();
-        if(!percentDiscount.isBlank()) {
-
+        if(percentDiscount.isBlank()) {
+            printMessage("Внеси процент за попуст!", false);
+        } else {
             Integer price = order.getPrice();
+            Integer percent;
             try {
-                order.setPrice(price - (price * Integer.parseInt(percentDiscount)) / 100);
+                percent = Integer.parseInt(percentDiscount);
             } catch (NumberFormatException e) {
                 printMessage("Невалидна оперцаија! Внеси број.", false);
                 return;
             }
 
-            priceLabel.setText("Вкупно: " + order.getPrice());
-        } else {
-            printMessage("Внеси процент за попуст!", false);
+            if(percent < 0 || percent > 100) {
+                printMessage("Внесете вредност од (0 - 100)",false);
+            } else {
+                orderService.makeDiscount(order,price, percent);
+                printMessage("Успешно направен попуст",true);
+                setPriceLabel();
+            }
         }
     }
 
+    public void resetDiscount() {
+        if(order.getDiscount() == null || order.getDiscount() == 0) {
+            printMessage("Нарачката нема попуст!",false);
+        } else {
+            orderService.resetDiscount(order);
+            printMessage("Успешно ресетиран попуст",true);
+            setPriceLabel();
+        }
+    }
+
+    public void setPriceLabel() {
+        calculateChange();
+        discountField.setText("");
+        priceLabel.setText("Вкупно: " + order.getPrice());
+    }
+
     public void returnBack() {
-        if(callingController instanceof OrderHistory) {
+        if(callingController instanceof OrderHistoryController) {
             stageListener.changeScene("/fxml/settings.fxml");
         } else if (callingController instanceof InsideTableController) {
             stageListener.changeScene("/fxml/insideTable.fxml");
@@ -151,34 +210,17 @@ public class PaymentController {
     public Payment getSelectedRadioButton() {
         Toggle selectedToggle = toggleGroup.getSelectedToggle();
 
-        if (selectedToggle != null) {
-            if (selectedToggle.equals(cashRadio)) {
-                return Payment.ГОТОВИНА;
-            } else if (selectedToggle.equals(cardRadio)) {
-                return Payment.КАРТИЧКА;
-            } else {
-                return Payment.ФАКТУРА;
-            }
-        }
-
-        return null;
+        if (selectedToggle == null)
+            return null;
+        else if (selectedToggle.equals(cashRadio))
+            return Payment.ГОТОВИНА;
+        else if (selectedToggle.equals(cardRadio))
+            return Payment.КАРТИЧКА;
+        else
+            return Payment.ФАКТУРА;
     }
 
     public void printMessage(String message, Boolean color) {
-        Platform.runLater(() -> {
-            if(color) {
-                messageLabel.setTextFill(Color.web("#27ae60"));
-            } else {
-                messageLabel.setTextFill(Color.web("#f62b2b"));
-            }
-            messageLabel.setText(message);
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                messageLabel.setText(""); // Clear the message text after 5 seconds
-            }));
-
-            timeline.setCycleCount(1);
-            timeline.play();
-        });
+        MessagePrinter.printMessage(messageLabel, message, color);
     }
 }
