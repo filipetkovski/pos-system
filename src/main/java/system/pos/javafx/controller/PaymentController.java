@@ -135,19 +135,25 @@ public class PaymentController {
         String numberOfPeople = numberLabel.getText();
 
         if(pay != null && !numberOfPeople.isBlank()) {
+            int numOfPeople;
             try {
-                orderService.payOrder(order, pay, Integer.parseInt(numberOfPeople));
+                numOfPeople = Integer.parseInt(numberOfPeople);
             } catch (NumberFormatException e) {
                 printMessage("Невалидна операција! Внеси број.", false);
                 return;
             }
 
-            tableService.reset(tableService.findByNumber(order.getTable_number().longValue()));
-            if (callingController instanceof InsideTableController)
-                stageListener.changeScene("/fxml/homePage.fxml");
-            else
-                returnBack();
+            if(numOfPeople < 1) {
+                printMessage("Внеси позитивен број на особи!",false);
+            } else {
+                orderService.payOrder(order, pay, Integer.parseInt(numberOfPeople));
+                tableService.reset(tableService.findByNumber(order.getTable_number().longValue()));
 
+                if (callingController instanceof InsideTableController)
+                    stageListener.changeScene("/fxml/homePage.fxml");
+                else
+                    returnBack();
+            }
         } else {
             printMessage("Внеси ги сите податоци!", false);
         }
