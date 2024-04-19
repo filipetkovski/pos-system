@@ -11,10 +11,11 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.controller.PaymentController;
-import system.pos.javafx.controller.SettingsController;
+import system.pos.javafx.stage.PopUpStage;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.Payment;
 import system.pos.spring.enumm.Status;
@@ -24,19 +25,25 @@ import system.pos.spring.model.Order;
 import system.pos.spring.service.OrderService;
 import system.pos.spring.utility.MessagePrinter;
 
+import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class OrderHistoryController {
     private final OrderService orderService;
+    private final PopUpStage popUpStage;
     private final OrderViewController orderViewController;
     private final PaymentController paymentController;
     private final StageListener stageListener;
     private final ApplicationContext applicationContext;
 
-    public OrderHistoryController(OrderService orderService, OrderViewController orderViewController, PaymentController paymentController, StageListener stageListener, ApplicationContext applicationContext) {
+    public OrderHistoryController(OrderService orderService, PopUpStage popUpStage, OrderViewController orderViewController, PaymentController paymentController, StageListener stageListener, ApplicationContext applicationContext) {
         this.orderService = orderService;
+        this.popUpStage = popUpStage;
         this.orderViewController = orderViewController;
         this.paymentController = paymentController;
         this.stageListener = stageListener;
@@ -63,6 +70,8 @@ public class OrderHistoryController {
     private TableColumn<Order, String> paymentMethodColumn;
     @FXML
     private TableColumn<Order, LocalDateTime> dateColumn;
+    @FXML
+    private TextField codeInput;
     @FXML
     private Label messageLabel;
     private Employee employee;
@@ -150,6 +159,12 @@ public class OrderHistoryController {
         }
     }
 
+    public void filterOrders() {
+        URL url = getClass().getResource("/fxml/orderHistoryFilter.fxml");
+        popUpStage.initData(this);
+        popUpStage.openPopUP(url);
+    }
+
     public void openOrder() throws SettingsViewException {
         TableView.TableViewSelectionModel<Order> selectionModel = orderTable.getSelectionModel();
 
@@ -182,9 +197,36 @@ public class OrderHistoryController {
         }
     }
 
+    public void findOrderByCode() {
+        String codeText = codeInput.getText();
+        if(!codeText.isBlank()) {
+            long code;
+            try {
+                code = Long.parseLong(codeText);
+            } catch (Exception e) {
+                printMessage("Внеси цел број",false);
+                return;
+            }
+            Order order = orderService.findByCode(code);
+            if(order != null) {
+                update(Collections.singletonList(order));
+                codeInput.setText("");
+            }
+        }
+    }
+
+    public void update(List<Order> data) {
+        orderTable.getItems().clear();
+        data.forEach(dt -> orderTable.getItems().add(dt));
+    }
+
     public void printOrderHistory() {
         orderTable.getItems().clear();
         orderService.findAll().forEach(orderLog -> orderTable.getItems().add(orderLog));
+    }
+
+    public void refreshTable() {
+        printOrderHistory();
     }
 
     public void printMessage(String message, Boolean color) {

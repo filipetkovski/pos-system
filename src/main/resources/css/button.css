@@ -1,4 +1,4 @@
-#backButton, .buttonCss {
+Button, #backButton, .buttonCss {
     -fx-background-color: #e0e0e0;
     -fx-text-fill: #444;
 }
@@ -38,5 +38,9 @@ Button {
 
 .choice-box > .label {
     -fx-text-fill: #444;
+    -fx-font-size: 25px;
+}
+
+DatePicker .text-field {
     -fx-font-size: 25px;
 }
