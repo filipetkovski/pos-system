@@ -39,7 +39,9 @@ public class OrderHistoryFilterController {
     @FXML
     private ChoiceBox<Payment> paymentChoice;
     @FXML
-    private DatePicker datePicker;
+    private DatePicker dateBeforePicker;
+    @FXML
+    private DatePicker dateAfterPicker;
     @FXML
     private Button backButton;
     @FXML
@@ -54,7 +56,7 @@ public class OrderHistoryFilterController {
 
     public void initialize() {
         submitButton.setDefaultButton(true);
-        backButton.setDefaultButton(true);
+        backButton.setCancelButton(true);
         employeeChoice.getItems().add(null);
         employeeChoice.getItems().addAll(employeeService.findAll().stream().map(Employee::getName).toList());
         tableChoice.getItems().add(null);
@@ -78,8 +80,9 @@ public class OrderHistoryFilterController {
         String number = numberChoice.getValue() != null ? numberChoice.getValue(): null;
         String status = statusChoice.getValue() != null ? statusChoice.getValue().toString() : null;
         String payment = paymentChoice.getValue() != null ? paymentChoice.getValue().toString() : null;
-        String date = datePicker.getValue() != null ? datePicker.getValue().toString() : null;
-        sendNewDataToOrderHistoryController(pipeOrderHistoryService.filter(name, number, tableNumber, price, status, payment, date));
+        String dateAfter = dateAfterPicker.getValue() != null ? dateAfterPicker.getValue().toString() : null;
+        String dateBefore = dateBeforePicker.getValue() != null ? dateBeforePicker.getValue().toString() : null;
+        sendNewDataToOrderHistoryController(pipeOrderHistoryService.filter(name, number, tableNumber, price, status, payment, dateAfter, dateBefore));
     }
 
     public void sendNewDataToOrderHistoryController(List<Order> orders) throws Exception {
@@ -88,10 +91,9 @@ public class OrderHistoryFilterController {
     }
 
     public void closeStage() throws Exception {
-        if (stage != null) {
+        if (stage != null)
             stage.close();
-        } else {
+        else
             throw new Exception("Stage not found");
-        }
     }
 }

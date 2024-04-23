@@ -7,20 +7,20 @@ import system.pos.spring.pipeAndFilter.Filter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Comparator;
 
 @Component
 @NoArgsConstructor
-public class DateFilter implements Filter<String, Order>  {
+public class DateAfterFilter implements Filter<String, Order> {
     @Override
     public List<Order> execute(String dateText, List<Order> dbOrders) {
         if(dateText != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate localDate = LocalDate.parse(dateText, formatter);
             return dbOrders.stream()
-                    .filter(db -> !db.getCreatedOn().toLocalDate().isAfter(localDate))
+                    .filter(db -> !db.getCreatedOn().toLocalDate().isBefore(localDate))
                     .sorted(Comparator.comparing(Order::getCreatedOn).reversed())
                     .collect(Collectors.toList());
         }

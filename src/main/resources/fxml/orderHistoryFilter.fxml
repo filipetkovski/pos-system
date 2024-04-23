@@ -55,12 +55,12 @@
                         </font>
                      </Label>
                      <ChoiceBox fx:id="tableChoice" prefHeight="48.0" prefWidth="352.0" />
-                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="430.0" text="Датум">
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="430.0" text="Датум Од">
                         <font>
                            <Font size="30.0" />
                         </font>
                      </Label>
-                     <DatePicker fx:id="datePicker" prefHeight="48.0" prefWidth="371.0" promptText="Избери датум" />
+                     <DatePicker fx:id="dateAfterPicker" prefHeight="48.0" prefWidth="371.0" promptText="Избери датум" />
                   </children>
                </VBox>
                <VBox prefHeight="320.0" prefWidth="355.0" style="-fx-spacing: 10px;">
@@ -71,6 +71,12 @@
                         </font>
                      </Label>
                      <ChoiceBox fx:id="priceChoice" prefHeight="48.0" prefWidth="352.0" />
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="430.0" text=" Датум До">
+                        <font>
+                           <Font size="30.0" />
+                        </font>
+                     </Label>
+                     <DatePicker fx:id="dateBeforePicker" prefHeight="48.0" prefWidth="371.0" promptText="Избери датум" />
                   </children>
                </VBox>
             </children>
