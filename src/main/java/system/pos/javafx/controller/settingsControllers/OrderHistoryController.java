@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.aspectj.weaver.ast.Or;
@@ -19,13 +21,13 @@ import system.pos.javafx.stage.PopUpStage;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.Payment;
 import system.pos.spring.enumm.Status;
+import system.pos.spring.enumm.UserRole;
 import system.pos.spring.exception.SettingsViewException;
 import system.pos.spring.model.Employee;
 import system.pos.spring.model.Order;
 import system.pos.spring.service.OrderService;
 import system.pos.spring.utility.MessagePrinter;
 
-import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,6 +82,7 @@ public class OrderHistoryController {
     public void initialize() {
         initTable();
         printOrderHistory();
+        pane.setOnKeyPressed(this::handleKeyPressed);
     }
 
     public void initData(Employee employee) {
@@ -124,6 +127,12 @@ public class OrderHistoryController {
                 setText(empty || item == null ? null : formatter.format(item));
             }
         });
+    }
+
+    private void handleKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            findOrderByCode();
+        }
     }
 
     public void payOrder() {
@@ -204,14 +213,18 @@ public class OrderHistoryController {
             try {
                 code = Long.parseLong(codeText);
             } catch (Exception e) {
-                printMessage("Внеси цел број",false);
+                printMessage("Внеси цел број!",false);
+                codeInput.clear();
                 return;
             }
             Order order = orderService.findByCode(code);
-            if(order != null) {
+            if(order == null) {
+                printMessage("Не постои нарачка со таков код!",false);
+                codeInput.clear();
+            } else {
                 update(Collections.singletonList(order));
-                codeInput.setText("");
             }
+            codeInput.clear();
         }
     }
 

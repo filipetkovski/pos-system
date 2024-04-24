@@ -30,7 +30,7 @@
                       <Font size="25.0" />
                     </font>
                 </Label>
-               <TextField fx:id="codeInput" onKeyTyped="#findOrderByCode" prefHeight="51.0" prefWidth="209.0" promptText="Внеси код">
+               <TextField fx:id="codeInput" prefHeight="51.0" prefWidth="209.0" promptText="Внеси код">
                   <font>
                      <Font size="25.0" />
                   </font>
