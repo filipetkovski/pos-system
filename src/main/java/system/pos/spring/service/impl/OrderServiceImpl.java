@@ -1,6 +1,9 @@
 package system.pos.spring.service.impl;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import system.pos.spring.enumm.Payment;
 import system.pos.spring.enumm.Status;
@@ -102,6 +105,12 @@ public class OrderServiceImpl implements OrderService {
         order.setPrice(price - (price * percent) / 100);
         order.setDiscount(percent);
         save(order);
+    }
+
+    @Override
+    public List<Order> findLastHundred() {
+        Pageable pageable = PageRequest.of(0, 100);
+        return orderRepository.findAll(pageable).getContent();
     }
 
     @Override

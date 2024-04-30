@@ -36,7 +36,7 @@ public class PopUpStage {
             FXMLLoader fxmlLoader = new FXMLLoader(url);
             fxmlLoader.setControllerFactory(applicationContext::getBean);
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1500,520);
+            Scene scene = new Scene(root, 1206,375);
             scene.getStylesheets().add("path/to/your/style.css");
             stage.setScene(scene);
             stage.setTitle("Филтер");

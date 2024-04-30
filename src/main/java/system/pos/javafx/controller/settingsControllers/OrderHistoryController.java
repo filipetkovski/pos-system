@@ -13,12 +13,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import system.pos.javafx.controller.PaymentController;
@@ -26,16 +24,13 @@ import system.pos.javafx.stage.PopUpStage;
 import system.pos.javafx.stage.StageListener;
 import system.pos.spring.enumm.Payment;
 import system.pos.spring.enumm.Status;
-import system.pos.spring.enumm.UserRole;
 import system.pos.spring.exception.SettingsViewException;
 import system.pos.spring.model.Employee;
 import system.pos.spring.model.Order;
 import system.pos.spring.service.OrderService;
+import system.pos.spring.utility.ExcelDownloader;
 import system.pos.spring.utility.MessagePrinter;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -77,11 +72,15 @@ public class OrderHistoryController {
     @FXML
     private TableColumn<Order, String> statusColumn;
     @FXML
+    private TableColumn<Order, String> discountColumn;
+    @FXML
     private TableColumn<Order, String> paymentMethodColumn;
     @FXML
     private TableColumn<Order, LocalDateTime> dateColumn;
     @FXML
     private TextField codeInput;
+    @FXML
+    private Label orderNumber;
     @FXML
     private Label messageLabel;
     private Employee employee;
@@ -105,6 +104,7 @@ public class OrderHistoryController {
         codeColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getCode()).asObject());
         employeeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmployee().getName()));
         numberColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getNumber_people()).asObject());
+        discountColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDiscount() + "%"));
         tableColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getTable_number()).asObject());
         priceColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getPrice()).asObject());
         paymentMethodColumn.setCellValueFactory(cellData -> {
@@ -231,63 +231,52 @@ public class OrderHistoryController {
                 printMessage("Не постои нарачка со таков код!",false);
                 codeInput.clear();
             } else {
-                update(Collections.singletonList(order));
+                renderTable(Collections.singletonList(order));
             }
             codeInput.clear();
         }
     }
 
-    public void printInExcel() throws FileNotFoundException {
+    public void printInExcel() {
         Iterable<Order> data = orders;
-
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Data");
 
         int rowNum = 0;
-        for (Order entity : data) {
+        for (Order order : data) {
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(entity.getCode());
-            row.createCell(1).setCellValue(entity.getEmployee().getName());
-            row.createCell(2).setCellValue(entity.getNumber_people());
-            row.createCell(3).setCellValue(entity.getTable_number());
-            row.createCell(4).setCellValue(entity.getPrice());
-            row.createCell(5).setCellValue(entity.getStatus().toString());
-            row.createCell(6).setCellValue(entity.getPayment_method() != null ? entity.getPayment_method().toString() : null);
-            row.createCell(7).setCellValue(entity.getDiscount());
-            String date = entity.getCreatedOn().format(DateTimeFormatter.ofPattern("HH:mm-dd/MM/yyyy"));
+            row.createCell(0).setCellValue(order.getCode());
+            row.createCell(1).setCellValue(order.getEmployee().getName());
+            row.createCell(2).setCellValue(order.getNumber_people());
+            row.createCell(3).setCellValue(order.getTable_number());
+            row.createCell(4).setCellValue(order.getPrice());
+            row.createCell(5).setCellValue(order.getStatus().toString());
+            row.createCell(6).setCellValue(order.getPayment_method() != null ? order.getPayment_method().toString() : "");
+            row.createCell(7).setCellValue(order.getDiscount());
+            String date = order.getCreatedOn().format(DateTimeFormatter.ofPattern("HH:mm-dd/MM/yyyy"));
             row.createCell(8).setCellValue(date);
         }
 
-        // Write workbook to file
         LocalDateTime now = LocalDateTime.now();
         String formattedDateTime = now.format(DateTimeFormatter.ofPattern("ddMMyyyyHHmmss"));
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialFileName("нарачки" + formattedDateTime + ".xlsx");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
-        fileChooser.setTitle("Save Excel File");
 
-        // Show save dialog
-        FileOutputStream fileOut = new FileOutputStream(fileChooser.showSaveDialog(null));
         try {
-            workbook.write(fileOut);
-            fileOut.close();
-            workbook.close();
-        } catch (IOException e) {
+            ExcelDownloader.downloadExcelFile(workbook,"нарачки" + formattedDateTime + ".xlsx");
+        } catch (Exception e) {
             printMessage("Не успешна операција", false);
             throw new RuntimeException(e);
         }
     }
 
-    public void update(List<Order> data) {
+    public void renderTable(List<Order> data) {
         orders = data;
         orderTable.getItems().clear();
-        data.forEach(dt -> orderTable.getItems().add(dt));
+        orders.forEach(dt -> orderTable.getItems().add(dt));
+        orderNumber.setText(orders.size() + " нарачки");
     }
 
     public void printOrderHistory() {
-        orders = orderService.findAll();
-        orderTable.getItems().clear();
-        orderService.findAll().forEach(orderLog -> orderTable.getItems().add(orderLog));
+        renderTable(orderService.findLastHundred());
     }
 
     public void refreshTable() {

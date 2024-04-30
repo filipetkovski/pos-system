@@ -30,4 +30,6 @@ public interface OrderService {
     void resetDiscount(Order order);
 
     void makeDiscount(Order order, Integer price, Integer percent);
+
+    List<Order> findLastHundred();
 }

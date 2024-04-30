@@ -102,7 +102,7 @@ public class OrderHistoryFilterController {
     }
 
     public void sendNewDataToOrderHistoryController(List<Order> orders) throws Exception {
-        applicationContext.getBean(OrderHistoryController.class).update(orders);
+        applicationContext.getBean(OrderHistoryController.class).renderTable(orders);
         closeStage();
     }
 
