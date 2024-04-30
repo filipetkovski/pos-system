@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="472.0" prefWidth="1206.0" stylesheets="/css/button.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="system.pos.javafx.controller.settingsControllers.filterControllers.OrderHistoryFilterController">
+   <left>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </left>
+   <top>
+      <AnchorPane prefHeight="487.0" prefWidth="1206.0" BorderPane.alignment="CENTER">
+         <HBox layoutX="24.0" layoutY="148.0" prefHeight="206.0" prefWidth="1163.0" style="-fx-spacing: 15px;">
+            <children>
+               <VBox prefHeight="206.0" prefWidth="280.0" style="-fx-spacing: 10px;">
+                  <children>
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="411.0" text="Корисник">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <ChoiceBox fx:id="employeeChoice" prefHeight="48.0" prefWidth="295.0" />
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="402.0" text="Статус">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <ChoiceBox fx:id="statusChoice" prefHeight="48.0" prefWidth="352.0" />
+                  </children>
+               </VBox>
+               <VBox prefHeight="206.0" prefWidth="280.0" style="-fx-spacing: 10px;">
+                  <children>
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="385.0" text="Особи">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <ChoiceBox fx:id="numberChoice" prefHeight="48.0" prefWidth="352.0" />
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="511.0" text="Наплата">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <ChoiceBox fx:id="paymentChoice" prefHeight="48.0" prefWidth="352.0" />
+                  </children>
+               </VBox>
+               <VBox prefHeight="206.0" prefWidth="280.0" style="-fx-spacing: 10px;">
+                  <children>
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="412.0" text="Маса">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <ChoiceBox fx:id="tableChoice" prefHeight="48.0" prefWidth="352.0" />
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="430.0" text="Датум Од">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <DatePicker fx:id="dateAfterPicker" prefHeight="48.0" prefWidth="371.0" promptText="Избери датум" />
+                  </children>
+               </VBox>
+               <VBox prefHeight="206.0" prefWidth="280.0" style="-fx-spacing: 10px;">
+                  <children>
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="395.0" text="Цена">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <ChoiceBox fx:id="priceChoice" prefHeight="48.0" prefWidth="352.0" />
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="430.0" text=" Датум До">
+                        <font>
+                           <Font size="20.0" />
+                        </font>
+                     </Label>
+                     <DatePicker fx:id="dateBeforePicker" prefHeight="48.0" prefWidth="371.0" promptText="Избери датум" />
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+         <Button fx:id="submitButton" layoutX="545.0" layoutY="392.0" mnemonicParsing="false" onAction="#submitFilter" prefHeight="44.0" prefWidth="110.0" style="-fx-background-color: #3498db; -fx-text-fill: white;" styleClass="buttonCss" text="Потврди">
+            <font>
+               <Font size="20.0" />
+            </font>
+         </Button>
+         <HBox layoutX="24.0" layoutY="22.0" prefHeight="50.0" prefWidth="1169.0" style="-fx-spacing: 15px;">
+            <children>
+               <Button fx:id="backButton" mnemonicParsing="false" onAction="#closeStage" prefHeight="50.0" prefWidth="110.0" styleClass="buttonCss" text="Назад">
+                  <font>
+                     <Font size="20.0" />
+                  </font>
+               </Button>
+               <Label fx:id="printMessage" prefHeight="60.0" prefWidth="925.0">
+                  <font>
+                     <Font size="30.0" />
+                  </font>
+               </Label>
+            </children>
+         </HBox>
+      </AnchorPane>
+   </top>
+</BorderPane>
