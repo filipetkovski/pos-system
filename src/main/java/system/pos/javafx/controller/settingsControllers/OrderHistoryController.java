@@ -13,6 +13,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -28,6 +33,9 @@ import system.pos.spring.model.Order;
 import system.pos.spring.service.OrderService;
 import system.pos.spring.utility.MessagePrinter;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -77,6 +85,7 @@ public class OrderHistoryController {
     @FXML
     private Label messageLabel;
     private Employee employee;
+    private List<Order> orders;
 
     @FXML
     public void initialize() {
@@ -228,12 +237,55 @@ public class OrderHistoryController {
         }
     }
 
+    public void printInExcel() throws FileNotFoundException {
+        Iterable<Order> data = orders;
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Data");
+
+        int rowNum = 0;
+        for (Order entity : data) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(entity.getCode());
+            row.createCell(1).setCellValue(entity.getEmployee().getName());
+            row.createCell(2).setCellValue(entity.getNumber_people());
+            row.createCell(3).setCellValue(entity.getTable_number());
+            row.createCell(4).setCellValue(entity.getPrice());
+            row.createCell(5).setCellValue(entity.getStatus().toString());
+            row.createCell(6).setCellValue(entity.getPayment_method() != null ? entity.getPayment_method().toString() : null);
+            row.createCell(7).setCellValue(entity.getDiscount());
+            String date = entity.getCreatedOn().format(DateTimeFormatter.ofPattern("HH:mm-dd/MM/yyyy"));
+            row.createCell(8).setCellValue(date);
+        }
+
+        // Write workbook to file
+        LocalDateTime now = LocalDateTime.now();
+        String formattedDateTime = now.format(DateTimeFormatter.ofPattern("ddMMyyyyHHmmss"));
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName("нарачки" + formattedDateTime + ".xlsx");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
+        fileChooser.setTitle("Save Excel File");
+
+        // Show save dialog
+        FileOutputStream fileOut = new FileOutputStream(fileChooser.showSaveDialog(null));
+        try {
+            workbook.write(fileOut);
+            fileOut.close();
+            workbook.close();
+        } catch (IOException e) {
+            printMessage("Не успешна операција", false);
+            throw new RuntimeException(e);
+        }
+    }
+
     public void update(List<Order> data) {
+        orders = data;
         orderTable.getItems().clear();
         data.forEach(dt -> orderTable.getItems().add(dt));
     }
 
     public void printOrderHistory() {
+        orders = orderService.findAll();
         orderTable.getItems().clear();
         orderService.findAll().forEach(orderLog -> orderTable.getItems().add(orderLog));
     }
