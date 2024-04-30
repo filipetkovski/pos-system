@@ -14,6 +14,7 @@ import system.pos.spring.model.Tables;
 import system.pos.spring.service.EmployeeService;
 import system.pos.spring.service.TableService;
 import system.pos.spring.service.pipeServices.pipeImpl.PipeOrderHistoryServiceImpl;
+import system.pos.spring.utility.MessagePrinter;
 
 import java.util.List;
 
@@ -82,7 +83,22 @@ public class OrderHistoryFilterController {
         String payment = paymentChoice.getValue() != null ? paymentChoice.getValue().toString() : null;
         String dateAfter = dateAfterPicker.getValue() != null ? dateAfterPicker.getValue().toString() : null;
         String dateBefore = dateBeforePicker.getValue() != null ? dateBeforePicker.getValue().toString() : null;
-        sendNewDataToOrderHistoryController(pipeOrderHistoryService.filter(name, number, tableNumber, price, status, payment, dateAfter, dateBefore));
+
+        if (!isInvalidFormat(dateAfter))
+            printMessage("Внесете валиден формат на датум од (мм/дд/гггг)", false);
+        else if (!isInvalidFormat(dateBefore))
+            printMessage("Внесете валиден формат на датум до (мм/дд/гггг)", false);
+        else
+            sendNewDataToOrderHistoryController(pipeOrderHistoryService.filter(name, number, tableNumber, price, status, payment, dateAfter, dateBefore));
+
+    }
+
+    private boolean isInvalidFormat(String date) {
+        String dateFormatPattern = "\\d{2}/\\d{2}/\\d{4}";
+        if(date != null)
+            return !date.matches(dateFormatPattern);
+        else
+            return true;
     }
 
     public void sendNewDataToOrderHistoryController(List<Order> orders) throws Exception {
@@ -96,4 +112,7 @@ public class OrderHistoryFilterController {
         else
             throw new Exception("Stage not found");
     }
+
+    public void printMessage(String message, Boolean color) { MessagePrinter.printMessage(printMessage, message, color); }
+
 }
